@@ -18,8 +18,6 @@ spec:
       labels:
         app: kerberos-storage-cleanup
     spec:
-      imagePullSecrets:
-       - name: regcred
       containers:
       - name: kerberos-storage-cleanup
         image: kerberos/storage-cleanup:1.0.0
