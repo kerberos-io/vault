@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kerberos-storage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kerberos-storage
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: kerberos-storage
+    spec:
+      imagePullSecrets:
+       - name: regcred
+      containers:
+      - name: kerberos-storage
+        image: kerberos/storage:1.0.0
+        ports:
+          - containerPort: 80
+          - containerPort: 8081
+        env:
+        - name: KERBEROS_LOGIN_USERNAME
+          value: "root"
+        - name: KERBEROS_LOGIN_PASSWORD
+          value: "kerberos"
+        - name: KERBEROS_CLOUD_ENABLED
+          value: "true"
+        - name: MONGODB_DATABASE_CLOUD
+          value: "Kerberos"
+        - name: MONGODB_DATABASE_FACTORY
+          value: "KerberosFactory"
+        - name: MONGODB_DATABASE_STORAGE
+          value: "KerberosStorage"
+        - name: MONGODB_HOST
+          value: "mongodb"
+        - name: MONGODB_DATABASE_CREDENTIALS
+          value: "admin"
+        - name: MONGODB_USERNAME
+          value: "root"
+        - name: MONGODB_PASSWORD
+          value: "xxxxxxxxxx"
+        - name: LICENSE_API_URL
+          value: "https://license.kerberos.io/verify"
+        - name: LICENSE_PUBLIC_API_TOKEN
+          value: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kerberos-storage
+  labels:
+    app: kerberos-storage
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: frontend
+    protocol: TCP
+  - port: 8081
+    name: backend
+    targetPort: 8081
+    protocol: TCP
+  selector:
+    app: kerberos-storage
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kerberos-storage
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: storage.yourdomain.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kerberos-storage
+          servicePort: 80
+  - host: api.storage.yourdomain.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kerberos-storage
+          servicePort: 8081

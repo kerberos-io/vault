@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kerberos-storage-cleanup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kerberos-storage-cleanup
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: kerberos-storage-cleanup
+    spec:
+      imagePullSecrets:
+       - name: regcred
+      containers:
+      - name: kerberos-storage-cleanup
+        image: kerberos/storage-cleanup:1.0.0
+        env:
+        - name: MONGODB_DATABASE_CLOUD
+          value: "Kerberos"
+        - name: MONGODB_DATABASE_FACTORY
+          value: "KerberosFactory"
+        - name: MONGODB_DATABASE_STORAGE
+          value: "KerberosStorage"
+        - name: MONGODB_HOST
+          value: "mongodb"
+        - name: MONGODB_DATABASE_CREDENTIALS
+          value: "admin"
+        - name: MONGODB_USERNAME
+          value: "root"
+        - name: MONGODB_PASSWORD
+          value: "xxxxxxx"
