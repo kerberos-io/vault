@@ -49,6 +49,8 @@ spec:
           value: "https://license.kerberos.io/verify"
         - name: LICENSE_PUBLIC_API_TOKEN
           value: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM"
+        - name : KERBEROS_CLOUD_QUEUE
+          value: "https://queue.cloud.kerberos.io"
 ---
 apiVersion: v1
 kind: Service
