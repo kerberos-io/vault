@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-storage
-        image: kerberos/storage:1.0.0
+        image: kerberos/storage:1.0.1
         ports:
           - containerPort: 80
           - containerPort: 8081
