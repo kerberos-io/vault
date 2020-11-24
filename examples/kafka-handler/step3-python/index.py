@@ -10,7 +10,6 @@ while True:
     try:
         messages = kafkaQueue.ReceiveMessages()
         for message in messages:
-            body = message
             print message
             print("next..")
         print("reading..")
