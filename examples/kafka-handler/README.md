@@ -45,29 +45,64 @@ First install the confluent_kafka Python library.
 
     pip3 install confluent_kafka
 
-
 Add following code to a `index.py` file.
 
-      from mqueue import CreateQueue
+    from mqueue import CreateQueue
 
-      kafkaQueue = CreateQueue(queueName='kerberos-storage-example-queue',
-                               broker='broker1.kerberos.io:9094,broker2.kerberos.io:9094,broker3.kerberos.io:9094',
-                               mechanism='PLAIN',
-                               security='SASL_PLAINTEXT',
-                               username= 'aaa',
-                               password='xxx')
-      while True:
-          try:
-              messages = kafkaQueue.ReceiveMessages()
-              for message in messages:
-                  print message
-                  print("next..")
-              print("reading..")
+    kafkaQueue = CreateQueue(queueName='kerberos-storage-example-queue',
+                             broker='broker1.kerberos.io:9094,broker2.kerberos.io:9094,broker3.kerberos.io:9094',
+                             mechanism='PLAIN',
+                             security='SASL_PLAINTEXT',
+                             username= 'aaa',
+                             password='xxx')
+    while True:
+        try:
+            messages = kafkaQueue.ReceiveMessages()
+            for message in messages:
+                print message
+                print("next..")
+            print("reading..")
 
-          except Exception as e:
-              print("error..")
-              print(e)
-              pass
+        except Exception as e:
+            print("error..")
+            print(e)
+            pass
+
+Add following code to a `mqueue.py` file.
+
+    import json
+    from confluent_kafka import Producer, Consumer
+
+    def CreateQueue(queueName='', broker='', mechanism='', security='', username= '', password=''):
+        return Kafka(queueName=queueName, broker=broker, mechanism=mechanism, security=security, username=username, password=password)
+
+    class Kafka:
+        def __init__(self, queueName='', broker='', mechanism='', security='', username= '', password=''):
+            self.queueName = queueName
+            kafkaC_settings = {
+                'bootstrap.servers': broker,
+                "group.id":             "mygroup",
+                "session.timeout.ms":   10000,
+                "queued.max.messages.kbytes": 10000, #10MB
+            	"auto.offset.reset":    "earliest",
+                "sasl.mechanisms":   mechanism,#"PLAIN",
+                "security.protocol": security, #"SASL_PLAINTEXT",
+                "sasl.username":     username,
+                "sasl.password":     password,
+            }
+            self.kafka_consumer = Consumer(kafkaC_settings)
+            self.kafka_consumer.subscribe([self.queueName])
+
+        def ReceiveMessages(self):
+            msg = self.kafka_consumer.poll(timeout=1.0)
+            if msg is None:
+                return []
+            return [json.loads(msg.value())]
+
+        def Close(self):
+            self.kafka_consumer.close()
+            return True
+
 
 When running this code `python3 index.py`, it will continously read from the specified Kafka topic. Each time a recording is uploaded to Kerberos Storage, an event will be generated within a few milliseconds. For example:
 
