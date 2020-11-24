@@ -11,3 +11,7 @@ In addition to the concept of BYOC, Kerberos Storage enables you to connect to K
 ## Installation
 
 For installing Kerberos Storage, you can follow [the how-to on our documentation website](https://doc.kerberos.io/storage/installation). In this repository you will find all the configuration files used in the installation tutorial.
+
+## Examples
+
+A couple of [examples can be found here](examples). These examples illustrates how the Kerberos Storage API is working, and how it can be used to develop custom algorithms or applications.
