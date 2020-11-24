@@ -195,8 +195,8 @@ If all went well, you should see messages being displayed and a video file being
 
 Now we have successfully retrieved the video from Kerberos Storage API, we can now process the video by a computer vision algorithm or function. Let's first install some dependencies.
 
-  pip3 install opencv-python
-  pip3 install sklearn
+    pip3 install opencv-python
+    pip3 install sklearn
 
 Let's go ahead and calculate the histogram of the video, using the `KMeans` function of `sklearn.cluster`. More info about the function [can be found here](https://scikit-learn.org/stable/modules/clustering.html#k-means). Before we can use the KMeans function, we first need to import `opencv`, open the video file and read a frame.
 
