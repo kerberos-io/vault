@@ -4,4 +4,4 @@ The purpose of this directory is to show you how extensions can be build using K
 
 # List of examples
 
-- Kafka Handler: Retrieve real-time Kerberos Storage events from a Kafka broker, fetch recording from Kerberos Storage and execute an algorithm. [Python]
+- [Kafka Handler](kafka-handler): Retrieve real-time Kerberos Storage events from a Kafka broker, fetch recording from Kerberos Storage and execute an algorithm. [Python]
