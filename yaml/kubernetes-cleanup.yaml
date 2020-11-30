@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
       - name: kerberos-storage-cleanup
-        image: kerberos/storage-cleanup:1.0.0
+        image: kerberos/storage-cleanup:1.0.1
+        imagePullPolicy: Always
         env:
         - name: MONGODB_DATABASE_CLOUD
           value: "Kerberos"
