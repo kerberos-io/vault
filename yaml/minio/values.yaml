@@ -54,8 +54,8 @@ priorityClassName: ""
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 existingSecret: ""
-accessKey: "AKIAIOSFODNN7EXAMPWWZZ"
-secretKey: "9opJalrXUtnFEM54452K7MDENG/bPxRfiCYE2323MP"
+accessKey: "minio"
+secretKey: "minio12345"
 certsPath: "/etc/minio/certs/"
 configPathmc: "/etc/minio/mc/"
 mountPath: "/export"
