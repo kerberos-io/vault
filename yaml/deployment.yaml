@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-storage
-        image: kerberos/storage:1.2.1
+        image: kerberos/storage:1.2.2
         ports:
           - containerPort: 80
           - containerPort: 8081
@@ -31,6 +31,11 @@ spec:
           value: "kerberos"
         - name: KERBEROS_CLOUD_ENABLED
           value: "true"
+        # By default the API will be served on api.storagedomain.com (api.) is prefixed.
+        # If you prefer another hostname for the API e.g. mystorageapi-storagedomain.com
+        # Enable and change this variable to "mystorageapi-storagedomain.com"
+        #- name: STORAGE_API_URL
+        #  value: "mystorageapi-storagedomain.com"
         - name: MONGODB_DATABASE_CLOUD
           value: "Kerberos"
         - name: MONGODB_DATABASE_FACTORY
@@ -86,7 +91,7 @@ spec:
         backend:
           serviceName: kerberos-storage
           servicePort: 80
-  - host: api.storage.yourdomain.com
+  - host: api.storage.yourdomain.com #mystorageapi-storagedomain.com
     http:
       paths:
       - path: /
