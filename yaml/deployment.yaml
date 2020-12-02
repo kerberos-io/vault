@@ -21,6 +21,7 @@ spec:
       containers:
       - name: kerberos-storage
         image: kerberos/storage:1.2.2
+        imagePullPolicy: Always
         ports:
           - containerPort: 80
           - containerPort: 8081
