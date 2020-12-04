@@ -83,6 +83,8 @@ metadata:
   name: kerberos-storage
   annotations:
     kubernetes.io/ingress.class: traefik
+    #kubernetes.io/ingress.class: nginx
+    #nginx.ingress.kubernetes.io/proxy-body-size: 200m
 spec:
   rules:
   - host: storage.yourdomain.com
