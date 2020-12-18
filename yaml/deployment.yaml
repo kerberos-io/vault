@@ -57,6 +57,8 @@ spec:
           value: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM"
         - name : KERBEROS_CLOUD_QUEUE
           value: "https://queue.cloud.kerberos.io"
+        - name : MQTTURI
+          value: "tcp://mqtt.kerberos.io:1883"
 ---
 apiVersion: v1
 kind: Service
