@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-storage
-        image: kerberos/storage:1.3.5
+        image: kerberos/storage:1.3.7
         #imagePullPolicy: Always
         resources:
           limits:
