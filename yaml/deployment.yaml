@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kerberos-storage
+  name: kerberos-vault
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kerberos-storage
+      app: kerberos-vault
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -16,10 +16,10 @@ spec:
   template:
     metadata:
       labels:
-        app: kerberos-storage
+        app: kerberos-vault
     spec:
       containers:
-      - name: kerberos-storage
+      - name: kerberos-vault
         image: kerberos/storage:1.3.8
         #imagePullPolicy: Always
         resources:
@@ -35,11 +35,11 @@ spec:
           value: "kerberos"
         - name: KERBEROS_CLOUD_ENABLED
           value: "true"
-        # By default the API will be served on api.storagedomain.com (api.) is prefixed.
-        # If you prefer another hostname for the API e.g. mystorageapi-storagedomain.com
-        # Enable and change this variable to "mystorageapi-storagedomain.com"
+        # By default the API will be served on api.vaultdomain.com (api.) is prefixed.
+        # If you prefer another hostname for the API e.g. myvaultapi-vaultdomain.com
+        # Enable and change this variable to "myvaultapi-vaultdomain.com"
         #- name: STORAGE_API_URL
-        #  value: "mystorageapi-storagedomain.com"
+        #  value: "myvaultapi-storagedomain.com"
         - name: MONGODB_DATABASE_CLOUD
           value: "Kerberos"
         - name: MONGODB_DATABASE_FACTORY
@@ -70,9 +70,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kerberos-storage
+  name: kerberos-vault
   labels:
-    app: kerberos-storage
+    app: kerberos-vault
 spec:
   ports:
   - port: 80
@@ -84,29 +84,29 @@ spec:
     targetPort: 8081
     protocol: TCP
   selector:
-    app: kerberos-storage
+    app: kerberos-vault
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: kerberos-storage
+  name: kerberos-vault
   annotations:
     kubernetes.io/ingress.class: traefik
     #kubernetes.io/ingress.class: nginx
     #nginx.ingress.kubernetes.io/proxy-body-size: 200m
 spec:
   rules:
-  - host: storage.yourdomain.com
+  - host: vault.yourdomain.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: kerberos-storage
+          serviceName: kerberos-vault
           servicePort: 80
-  - host: api.storage.yourdomain.com #mystorageapi-storagedomain.com
+  - host: api.vault.yourdomain.com #myvaultapi-storagedomain.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: kerberos-storage
+          serviceName: kerberos-vault
           servicePort: 8081
