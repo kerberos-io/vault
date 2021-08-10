@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kerberos-storage-cleanup
+  name: kerberos-vault-cleanup
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kerberos-storage-cleanup
+      app: kerberos-vault-cleanup
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -16,10 +16,10 @@ spec:
   template:
     metadata:
       labels:
-        app: kerberos-storage-cleanup
+        app: kerberos-vault-cleanup
     spec:
       containers:
-      - name: kerberos-storage-cleanup
+      - name: kerberos-vault-cleanup
         image: kerberos/storage-cleanup:1.0.1
         imagePullPolicy: Always
         env:
