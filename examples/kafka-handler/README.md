@@ -14,8 +14,6 @@ After installation make sure you have connected on or more cameras to Kerberos E
 
 Ok.. Let's go!
 
-![Let's go](https://memegenerator.net/img/instances/84132439/lets-go.jpg)
-
 ## 1. Setup a Kafka broker
 
 Installing a Kafka broker is easy. At least it's easy for people who are familiar with Helm. Go ahead and install the Kafka helm chart using following command.
