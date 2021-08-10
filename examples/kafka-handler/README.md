@@ -1,16 +1,16 @@
-# Kerberos Storage - A Kafka handler
+# Kerberos Vault - A Kafka handler
 
 The purpose of this exercise will cover following steps:
 
 1. Setup a Kafka broker,
-2. Connect Kerberos Storage to Kafka,
+2. Connect Kerberos Vault to Kafka,
 3. Retrieve and process real-time messages,
-4. Fetch related recording from Kerberos Storage API.
+4. Fetch related recording from Kerberos Vault API.
 5. Execute a color histogram algorithm.
 
-By doing this exercise you have to make sure you have a running kubernetes (k8s) cluster and properly setup [Kerberos Enterprise](https://doc.kerberos.io/enterprise/installation) and [Kerberos Storage](https://doc.kerberos.io/storage/installation).
+By doing this exercise you have to make sure you have a running kubernetes (k8s) cluster and properly setup [Kerberos Enterprise](https://doc.kerberos.io/enterprise/installation) and [Kerberos Vault](https://doc.kerberos.io/vault/installation).
 
-After installation make sure you have connected on or more cameras to Kerberos Enterprise and have one or more providers (Azure, AWS, GCP or Minio) connected to Kerberos Storage.
+After installation make sure you have connected on or more cameras to Kerberos Enterprise and have one or more providers (Azure, AWS, GCP or Minio) connected to Kerberos Vault.
 
 Ok.. Let's go!
 
@@ -29,13 +29,13 @@ Once properly installed you should be able to open a Kafka client (e.g. Kafka To
 
     org.apache.kafka.common.security.plain.PlainLoginModule required username="aaa" password="xxx";
 
-## 2. Connect Kerberos Storage to Kafka
+## 2. Connect Kerberos Vault to Kafka
 
-Making the assumption you have successfully setup your Kafka broker, we can now update our Kerberos Storage installation. Open the Kerberos Storage web interface, and select the queue tab. Add a new queue, select Kafka and fill-in the different settings.
+Making the assumption you have successfully setup your Kafka broker, we can now update our Kerberos Vault installation. Open the Kerberos Vault web interface, and select the queue tab. Add a new queue, select Kafka and fill-in the different settings.
 
-![Kerberos Storage Kafka Configuration](kerberos-storage-kafka.png)
+![Kerberos Vault Kafka Configuration](kerberos-storage-kafka.png)
 
-Once saved, all files being uploaded to the Kerberos Storage provider will trigger a message to be send to the Kafka broker and more specifically the topic you've defined (kcloud-event-queue, in above example).
+Once saved, all files being uploaded to the Kerberos Vault provider will trigger a message to be send to the Kafka broker and more specifically the topic you've defined (kcloud-event-queue, in above example).
 
 ## 3. Retrieve and process real-time messages with Python
 
@@ -104,7 +104,7 @@ Add following code to a `mqueue.py` file.
             return True
 
 
-When running this code `python3 index.py`, it will continously read from the specified Kafka topic. Each time a recording is uploaded to Kerberos Storage, an event will be generated within a few milliseconds. For example:
+When running this code `python3 index.py`, it will continously read from the specified Kafka topic. Each time a recording is uploaded to Kerberos Vault, an event will be generated within a few milliseconds. For example:
 
     next..
     reading..
@@ -118,43 +118,43 @@ When running this code `python3 index.py`, it will continously read from the spe
 
 Each message contains the filename of the recording but also some metadata: timestamp, provider name (source), number of changes pixels (event-numberofchanges), etc.
 
-## 4. Fetch related recording from Kerberos Storage API.
+## 4. Fetch related recording from Kerberos Vault API.
 
-The next step in the exercise is to request the content (recording) from the Kerberos Storage API, so we can load it into memory and do some computer vision.
+The next step in the exercise is to request the content (recording) from the Kerberos Vault API, so we can load it into memory and do some computer vision.
 
-To do this we first have to retrieve the filename (key) from the message, and the Kerberos Storage provider (source) to which the file was uploaded.
+To do this we first have to retrieve the filename (key) from the message, and the Kerberos Vault provider (source) to which the file was uploaded.
 
     fileName = message['payload']['key']
     provider = message['source']
 
-Once retrieved these data fields, we can build up the API call to the Kerberos Storage API. However before proceeding we could have a look at the Swagger API which ships with Kerberos Storage API.
+Once retrieved these data fields, we can build up the API call to the Kerberos Vault API. However before proceeding we could have a look at the Swagger API which ships with Kerberos Vault API.
 
-Open your browser and go to `http(s)://api.yourkerberostoragedomain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Storage API.
+Open your browser and go to `http(s)://api.yourkerberostoragedomain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Vault API.
 
-![Kerberos Storage Swagger](kerberos-storage-swagger.png)
+![Kerberos Vault Swagger](kerberos-storage-swagger.png)
 
-Scroll down until you see the storage section, and find the `/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Storage provider (AWS, GCP, Azure, or Minio).
+Scroll down until you see the storage section, and find the `/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Vault provider (AWS, GCP, Azure, or Minio).
 
-![Kerberos Storage Swagger Storage](kerberos-storage-swagger-storage.png)
+![Kerberos Vault Swagger API](kerberos-storage-swagger-storage.png)
 
-When opening the `/storage/blob` endpoint, you will see all the required fields to be send to the API, to retrieve the file from Kerberos Storage. As you can see a couple of headers needs to be send to the API:
+When opening the `/storage/blob` endpoint, you will see all the required fields to be send to the API, to retrieve the file from Kerberos Vault. As you can see a couple of headers needs to be send to the API:
 
 - X-Kerberos-Storage-FileName: this is the filename we retrieved from the Kafka message.
 - X-Kerberos-Storage-Provider: the provider which was used to store the file on.
-- X-Kerberos-Storage-AccessKey: the account AccessKey which you defined in the Kerberos Storage account section.
-- X-Kerberos-Storage-SecretAccessKey: the account SecretAccessKey which you defined in the Kerberos Storage account section.
+- X-Kerberos-Storage-AccessKey: the account AccessKey which you defined in the Kerberos Vault account section.
+- X-Kerberos-Storage-SecretAccessKey: the account SecretAccessKey which you defined in the Kerberos Vault account section.
 
-![Kerberos Storage Swagger Storage Blob](kerberos-storage-swagger-storage-blob.png)
+![Kerberos Vault Swagger Vault Blob](kerberos-storage-swagger-storage-blob.png)
 
 Before implementing the Python code, you could already verify with Swagger if you are using the write fields for requesting the file contents. A successful example might looks like this.
 
-![Kerberos Storage Swagger Storage Blob Success](kerberos-storage-swagger-storage-blob-success.png)
+![Kerberos Vault Swagger Vault Blob Success](kerberos-storage-swagger-storage-blob-success.png)
 
 A failed request, with invalid credentials (keys), might look like this.
 
-![Kerberos Storage Swagger Storage Blob Failed](kerberos-storage-swagger-storage-blob-failed.png)
+![Kerberos Vault Swagger Vault Blob Failed](kerberos-storage-swagger-storage-blob-failed.png)
 
-Now we know how to interact with the Kerberos Storage API, let's translate it to python code.
+Now we know how to interact with the Kerberos Vault API, let's translate it to python code.
 
 ### Request library
 
@@ -193,7 +193,7 @@ If all went well, you should see messages being displayed and a video file being
 
 ## 5. Execute a color detection algorithm.
 
-Now we have successfully retrieved the video from Kerberos Storage API, we can now process the video by a computer vision algorithm or function. Let's first install some dependencies.
+Now we have successfully retrieved the video from Kerberos Vault API, we can now process the video by a computer vision algorithm or function. Let's first install some dependencies.
 
     pip3 install opencv-python
     pip3 install sklearn
