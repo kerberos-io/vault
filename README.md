@@ -1,6 +1,6 @@
 # Kerberos Vault
 
-Users or Enteprises which only have a few surveillance cameras to manage, probably will be fine with Kerberos Open Source. On top of that they might include Kerberos Cloud for remote access and monitoring.
+Users or Enteprises which only have a few surveillance cameras to manage, probably will be fine with Kerberos Open Source. On top of that they might include Kerberos Hub for remote access and monitoring.
 
 On the other hand if you plan to manage a larger network of surveillance cameras, you will have to look into Kerberos Enterprise. Backed up with Kubernetes, Kerberos Enterprise, will give you the real super powers to your scale surveillance camera landscape. Kerberos Enterprise comes with a Front-End to manage and scale your deployments inside a Kubernetes Cluster.
 
