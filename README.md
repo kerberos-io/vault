@@ -4,6 +4,8 @@ Users or Enteprises which only have a few surveillance cameras to manage, probab
 
 On the other hand if you plan to manage a larger network of surveillance cameras, you will have to look into Kerberos Enterprise. Backed up with Kubernetes, Kerberos Enterprise, will give you the real super powers to your scale surveillance camera landscape. Kerberos Enterprise comes with a Front-End to manage and scale your deployments inside a Kubernetes Cluster.
 
+![arch-kerberos-vault-providers](https://user-images.githubusercontent.com/1546779/130074390-88b61351-96b7-42e4-89ab-ebdb243f1efb.png)
+
 Kerberos Enterprise leverages a service called, Kerberos Vault, for central and hybrid storage. Kerberos Vault implements the concept of BYOC (Bring Your Own Cloud). By selecting a cloud provider (AWS, GCP, AZURE) or on-premise (Minio) you can bring your recordings where you them to be.
 
 In addition to the concept of BYOC, Kerberos Vault enables you to connect to [Kerberos Hub](https://doc.kerberos.io/hub/first-things-first/) (with your own storage), send events to message brokers (such as Kafka or SQS) and enables you to build custom apps or services (such as a custom machine learning service).
