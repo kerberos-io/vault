@@ -25,11 +25,11 @@ spec:
           env:
             # Kerberos Vault
             - name: STORAGE_URI
-              value: "https://staging.api.vault.kerberos.live"
+              value: "https://staging.api.vault.kerberos.xxx"
             - name: STORAGE_ACCESS_KEY
-              value: "ABCDExxx#$%12345"
+              value: "xxx"
             - name: STORAGE_SECRET
-              value: "JKLMNOxxxVWXYZ!@#$%67890"
+              value: "xxx"
 
             # Kafka
             - name: KAFKA_QUEUE_NAME
