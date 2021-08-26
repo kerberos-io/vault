@@ -1,15 +1,15 @@
 import json
 from confluent_kafka import Producer, Consumer
 
-def CreateQueue(queueName='', broker='', mechanism='', security='', username= '', password=''):
-    return Kafka(queueName=queueName, broker=broker, mechanism=mechanism, security=security, username=username, password=password)
+def CreateQueue(queueName='', group='', broker='', mechanism='', security='', username= '', password=''):
+    return Kafka(queueName=queueName, group=group, broker=broker, mechanism=mechanism, security=security, username=username, password=password)
 
 class Kafka:
-    def __init__(self, queueName='', broker='', mechanism='', security='', username= '', password=''):
+    def __init__(self, queueName='', group='', broker='', mechanism='', security='', username= '', password=''):
         self.queueName = queueName
         kafkaC_settings = {
             'bootstrap.servers': broker,
-            "group.id":             "mygroup",
+            "group.id":             group,
             "session.timeout.ms":   10000,
             "queued.max.messages.kbytes": 10000, #10MB
         	"auto.offset.reset":    "earliest",

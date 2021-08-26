@@ -1,18 +1,31 @@
 from mqueue import CreateQueue
 import requests
 import cv2
+import os
 import numpy as np
 from sklearn.cluster import KMeans
 
-AccessKey = 'xxx'
-SecretAccessKey = 'xxx'
+# Kafka settings
+Uri = os.getenv("STORAGE_URI", "https://api.storage.kerberos.io")
+AccessKey = os.getenv("STORAGE_ACCESS_KEY", "xx")
+SecretAccessKey = os.getenv("STORAGE_SECRET", "xx")
 
-kafkaQueue = CreateQueue(queueName='kerberos-storage-example-queue',
-                         broker='kafka-prod0.kerberos.io:9094,kafka-prod1.kerberos.io:9094,kafka-prod2.kerberos.io:9094',
-                         mechanism='PLAIN',
-                         security='SASL_PLAINTEXT',
-                         username= 'aaa',
-                         password='xxx')
+# Kafka settings
+QueueName = os.getenv("KAFKA_QUEUE_NAME", "kerberos-storage-example-queue")
+Group = os.getenv("KAFKA_GROUP", "group")
+Broker = os.getenv("KAFKA_BROKER", "kafka-0:9092")
+Mechanism = os.getenv("KAFKA_MECHANISM", "PLAIN")
+Security = os.getenv("KAFKA_SECURITY", "SASL_PLAINTEXT")
+Username = os.getenv("KAFKA_USERNAME", "xx")
+Password = os.getenv("KAFKA_PASSWORD", "xx")
+
+kafkaQueue = CreateQueue(queueName=QueueName,
+                         group=Group,
+                         broker=Broker,
+                         mechanism=Mechanism,
+                         security=Security,
+                         username= Username,
+                         password=Password)
 
 def calculateHistogram(img):
 
@@ -42,7 +55,7 @@ while True:
             provider = message['source']
 
             response = requests.get(
-                'https://api.storage.kerberos.io/storage/blob',
+                Uri + '/storage/blob',
                 headers={
                     'X-Kerberos-Storage-FileName': fileName,
                     'X-Kerberos-Storage-Provider': provider,

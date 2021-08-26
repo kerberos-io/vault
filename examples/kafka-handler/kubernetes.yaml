@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-handler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-handler
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: kafka-handler
+    spec:
+      containers:
+        - name: kafka-handler
+          image: kerberos/kafka-handler:1.0
+          imagePullPolicy: Always
+          env:
+            # Kerberos Vault
+            - name: STORAGE_URI
+              value: "" #"https://staging.api.vault.kerberos.xxx"
+            - name: STORAGE_ACCESS_KEY
+              value: "" #"ABCDxxx2345"
+            - name: STORAGE_SECRET
+              value: "" #"JKLMNOPQxxxx#$%67890"
+
+            # Kafka
+            - name: KAFKA_QUEUE_NAME
+              value: "" #"kubeflow"
+            - name: KAFKA_BROKER
+              value: "" #"pkc-ldjyd.southamerica-xxx:9092"
+            - name: KAFKA_MECHANISM
+              value: "" #"PLAIN"
+            - name: KAFKA_SECURITY
+              value: "" #"SASL_SSL"
+            - name: KAFKA_USERNAME
+              value: "" #"KUYEcccF6DCC7"
+            - name: KAFKA_PASSWORD
+              value: "" #"CCfiCkB2GmLb0ARAaxxxVHaajNA0NfJ4J4744fuDywOIBQB"
