@@ -18,6 +18,7 @@ class Kafka:
             "sasl.username":     username,
             "sasl.password":     password,
         }
+        print(kafkaC_settings)
         self.kafka_consumer = Consumer(kafkaC_settings)
         self.kafka_consumer.subscribe([self.queueName])
 

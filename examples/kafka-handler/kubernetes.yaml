@@ -20,27 +20,29 @@ spec:
     spec:
       containers:
         - name: kafka-handler
-          image: kerberos/kafka-handler:1.0
+          image: kerberos/kafka-handler:1.1
           imagePullPolicy: Always
           env:
             # Kerberos Vault
             - name: STORAGE_URI
-              value: "" #"https://staging.api.vault.kerberos.xxx"
+              value: "https://staging.api.vault.kerberos.live"
             - name: STORAGE_ACCESS_KEY
-              value: "" #"ABCDxxx2345"
+              value: "ABCDExxx#$%12345"
             - name: STORAGE_SECRET
-              value: "" #"JKLMNOPQxxxx#$%67890"
+              value: "JKLMNOxxxVWXYZ!@#$%67890"
 
             # Kafka
             - name: KAFKA_QUEUE_NAME
-              value: "" #"kubeflow"
+              value: "mytopic"
+            - name: KAFKA_GROUP
+              value: "group"
             - name: KAFKA_BROKER
-              value: "" #"pkc-ldjyd.southamerica-xxx:9092"
+              value: "kafka:9092"
             - name: KAFKA_MECHANISM
-              value: "" #"PLAIN"
+              value: "PLAIN"
             - name: KAFKA_SECURITY
-              value: "" #"SASL_SSL"
+              value: "SASL_PLAINTEXT"
             - name: KAFKA_USERNAME
-              value: "" #"KUYEcccF6DCC7"
+              value: "Yourusername"
             - name: KAFKA_PASSWORD
-              value: "" #"CCfiCkB2GmLb0ARAaxxxVHaajNA0NfJ4J4744fuDywOIBQB"
+              value: "Yourpassword"
