@@ -31,7 +31,7 @@ Once properly installed you should be able to open a Kafka client (e.g. Kafka To
 
 Making the assumption you have successfully setup your Kafka broker, we can now update our Kerberos Vault installation. Open the Kerberos Vault web interface, and select the queue tab. Add a new queue, select Kafka and fill-in the different settings.
 
-![Kerberos Vault Kafka Configuration](kerberos-storage-kafka.png)
+![Kerberos Vault Kafka Configuration](images/kerberos-storage-kafka.png)
 
 Once saved, all files being uploaded to the Kerberos Vault provider will trigger a message to be send to the Kafka broker and more specifically the topic you've defined (kcloud-event-queue, in above example).
 
@@ -129,11 +129,11 @@ Once retrieved these data fields, we can build up the API call to the Kerberos V
 
 Open your browser and go to `http(s)://api.yourkerberostoragedomain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Vault API.
 
-![Kerberos Vault Swagger](kerberos-storage-swagger.png)
+![Kerberos Vault Swagger](images/kerberos-storage-swagger.png)
 
 Scroll down until you see the storage section, and find the `/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Vault provider (AWS, GCP, Azure, or Minio).
 
-![Kerberos Vault Swagger API](kerberos-storage-swagger-storage.png)
+![Kerberos Vault Swagger API](images/kerberos-storage-swagger-storage.png)
 
 When opening the `/storage/blob` endpoint, you will see all the required fields to be send to the API, to retrieve the file from Kerberos Vault. As you can see a couple of headers needs to be send to the API:
 
@@ -142,15 +142,15 @@ When opening the `/storage/blob` endpoint, you will see all the required fields 
 - X-Kerberos-Storage-AccessKey: the account AccessKey which you defined in the Kerberos Vault account section.
 - X-Kerberos-Storage-SecretAccessKey: the account SecretAccessKey which you defined in the Kerberos Vault account section.
 
-![Kerberos Vault Swagger Vault Blob](kerberos-storage-swagger-storage-blob.png)
+![Kerberos Vault Swagger Vault Blob](images/kerberos-storage-swagger-storage-blob.png)
 
 Before implementing the Python code, you could already verify with Swagger if you are using the write fields for requesting the file contents. A successful example might looks like this.
 
-![Kerberos Vault Swagger Vault Blob Success](kerberos-storage-swagger-storage-blob-success.png)
+![Kerberos Vault Swagger Vault Blob Success](images/kerberos-storage-swagger-storage-blob-success.png)
 
 A failed request, with invalid credentials (keys), might look like this.
 
-![Kerberos Vault Swagger Vault Blob Failed](kerberos-storage-swagger-storage-blob-failed.png)
+![Kerberos Vault Swagger Vault Blob Failed](images/kerberos-storage-swagger-storage-blob-failed.png)
 
 Now we know how to interact with the Kerberos Vault API, let's translate it to python code.
 
