@@ -1,5 +1,29 @@
 # Kerberos Vault - A Kafka handler
 
+An example of how to connect a Kafka broker to Kerberos Vault which produces messages everytime a recording was stored. Afterwards a Kafka handler is used to consume those messages and execute custom logic. 
+
+## How to run
+
+Activate the virtual environment, and install the dependencies.
+
+    python3 -m venv kafka-handler
+    ./kafka-handler/bin/pip install -r requirements.txt
+    ./kafka-handler/bin/python index.py
+
+## How to build a Docker image
+
+You can build a Docker image running below command.
+
+    docker build -t kafka-handler .
+
+## How to deploy to Kubernetes
+
+Once you've your Docker image composed, you can include it in your Kubernetes deployment.
+
+    kubectl apply -f kubernetes.yaml
+
+## Explanation
+
 The purpose of this exercise will cover following steps:
 
 1. Setup a Kafka broker,
