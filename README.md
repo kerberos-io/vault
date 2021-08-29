@@ -1,18 +1,26 @@
 # Kerberos Vault
 
-Users or Enteprises which only have a few surveillance cameras to manage, probably will be fine with Kerberos Open Source. On top of that they might include Kerberos Hub for remote access and monitoring.
+Kerberos Opensource and Kerberos Enterprise both store recordings on the local disk. To centralise your data at a single place, additional solutions are available. 
 
-On the other hand if you plan to manage a larger network of surveillance cameras, you will have to look into Kerberos Enterprise. Backed up with Kubernetes, Kerberos Enterprise, will give you the real super powers to your scale surveillance camera landscape. Kerberos Enterprise comes with a Front-End to manage and scale your deployments inside a Kubernetes Cluster.
+## Kerberos Hub
+One or more Kerberos Enterprise agents, can store their data directly on [Kerberos Hub](https://doc.kerberos.io/hub/first-things-first/), and benefit from the visualisation layer Kerberos Hub offers. When doing this your recordings will be uploaded inside the Kerberos datacenter (which is a black box for you).
+
+## Kerberos Vault
+In addition to that, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to Kerberos Hub in parrallel. These storage provider could live in the cloud such as AWS S3, GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio.
+
+Despite the flexible storage capabilities, Kerberos Vault is also an open platform, which can be used to build extensions (mobile apps, web apps, machine learning services, etc) and integrations. It allows you to leverage a scalable and stable system as a strong backbone for your video analytics solutions, machine learning algorithms, and more.
 
 ![arch-kerberos-vault-providers](https://user-images.githubusercontent.com/1546779/130074390-88b61351-96b7-42e4-89ab-ebdb243f1efb.png)
 
-Kerberos Enterprise leverages a service called, Kerberos Vault, for central and hybrid storage. Kerberos Vault implements the concept of BYOC (Bring Your Own Cloud). By selecting a cloud provider (AWS, GCP, AZURE) or on-premise (Minio) you can bring your recordings where you them to be.
+## Mission
 
-In addition to the concept of BYOC, Kerberos Vault enables you to connect to [Kerberos Hub](https://doc.kerberos.io/hub/first-things-first/) (with your own storage), send events to message brokers (such as Kafka or SQS) and enables you to build custom apps or services (such as a custom machine learning service).
+Both Kerberos Hub and Kerberos Vault belong to the Enterprise suite. The goal of this suite is to support enterprises building a scalable video surveillance infrastructure that is open to support there business processes and usecases. Kerberos Enterprise Suite will do all the heavy lifting in terms scaling the processing and storage of you surveillance cameras. On top of that it will provide integration and extensibility to build your own applications on top of that using Swagger API's, and real-time messaging such as Kafka.
+
+[![Kerberos Enterprise Suite](https://user-images.githubusercontent.com/1546779/131241617-9b700e80-f40c-45b2-809f-da61b146ae66.png)](https://kerberos.io/)
 
 ## Installation
 
-For installing Kerberos Vault, you can follow [the how-to on our documentation website](https://doc.kerberos.io/vault/installation). In this repository you will find all the configuration files used in the installation tutorial.
+For installing Kerberos Vault, you can follow [the how-to on our documentation website](https://doc.kerberos.io/vault/installation). In that documentation you will find all the configuration files used in the installation tutorial. 
 
 ## Examples
 
