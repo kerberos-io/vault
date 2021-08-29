@@ -14,7 +14,7 @@ Despite the flexible storage capabilities, Kerberos Vault is also an open platfo
 
 ## Mission
 
-Both Kerberos Hub and Kerberos Vault belong to the Enterprise suite. The goal of this suite is to support enterprises building a scalable video surveillance infrastructure that is open to support there business processes and usecases. Kerberos Enterprise Suite will do all the heavy lifting in terms scaling the processing and storage of you surveillance cameras. On top of that it will provide integration and extensibility to build your own applications on top of that using Swagger API's, and real-time messaging such as Kafka.
+Both Kerberos Hub and Kerberos Vault belong to the Enterprise suite. The goal of this suite is to support enterprises building a scalable video surveillance infrastructure that is open to support all business processes and usecases. Kerberos Enterprise Suite will do all the heavy lifting in terms scaling the processing and storage of you surveillance cameras. On top of that it will provide integration and extensibility to build your own applications on top of that using Swagger API's, and real-time messaging such as Kafka.
 
 [![Kerberos Enterprise Suite](https://user-images.githubusercontent.com/1546779/131241617-9b700e80-f40c-45b2-809f-da61b146ae66.png)](https://kerberos.io/)
 
