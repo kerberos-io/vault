@@ -86,27 +86,33 @@ spec:
   selector:
     app: kerberos-vault
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kerberos-vault
+  name: factory
   annotations:
     kubernetes.io/ingress.class: traefik
     #kubernetes.io/ingress.class: nginx
     #nginx.ingress.kubernetes.io/proxy-body-size: 200m
 spec:
   rules:
-  - host: vault.yourdomain.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kerberos-vault
-          servicePort: 80
-  - host: api.vault.yourdomain.com #myvaultapi-storagedomain.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: kerberos-vault
-          servicePort: 8081
+    - host: vault.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kerberos-vault
+                port:
+                  number: 80
+    - host: api.vault.yourdomain.com #myvaultapi-storagedomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kerberos-vault
+                port:
+                  number: 8081
