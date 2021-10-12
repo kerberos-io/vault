@@ -30,7 +30,7 @@ spec:
         - name: MONGODB_DATABASE_STORAGE
           value: "KerberosStorage"
         - name: MONGODB_HOST
-          value: "mongodb"
+          value: "mongodb.mongodb"
         - name: MONGODB_DATABASE_CREDENTIALS
           value: "admin"
         - name: MONGODB_USERNAME
