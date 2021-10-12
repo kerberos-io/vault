@@ -8,9 +8,13 @@ One or more Kerberos Enterprise agents, can store their data directly on [Kerber
 ## Kerberos Vault
 In addition to that, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to Kerberos Hub in parrallel. These storage provider could live in the cloud such as AWS S3, GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio.
 
+![Store at the edge with Kerberos Vault.](./images/vault-edge-storage.svg)
+
+![Store at the cloud with Kerberos Vault.](./images/vault-cloud-storage.svg)
+
 Despite the flexible storage capabilities, Kerberos Vault is also an open platform, which can be used to build extensions (mobile apps, web apps, machine learning services, etc) and integrations. It allows you to leverage a scalable and stable system as a strong backbone for your video analytics solutions, machine learning algorithms, and more.
 
-![arch-kerberos-vault-providers](https://user-images.githubusercontent.com/1546779/130074390-88b61351-96b7-42e4-89ab-ebdb243f1efb.png)
+![Kerberos Vault allows you to integrate.](./images/vault-integrations.svg)
 
 ## Mission
 
