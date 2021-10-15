@@ -36,7 +36,7 @@ By doing this exercise you have to make sure you have a running kubernetes (k8s)
 
 After installation make sure you have connected on or more cameras to Kerberos Enterprise and have one or more providers (Azure, AWS, GCP or Minio) connected to Kerberos Vault.
 
-Ok.. Let's go!
+Ok, let's go!
 
 ## 1. Setup a Kafka broker
 
@@ -55,7 +55,7 @@ Once properly installed you should be able to open a Kafka client (e.g. Kafka To
 
 Making the assumption you have successfully setup your Kafka broker, we can now update our Kerberos Vault installation. Open the Kerberos Vault web interface, and select the queue tab. Add a new queue, select Kafka and fill-in the different settings.
 
-![Kerberos Vault Kafka Configuration](images/kerberos-storage-kafka.png)
+![Kerberos Vault Kafka Configuration](images/vault-kafka.gif)
 
 Once saved, all files being uploaded to the Kerberos Vault provider will trigger a message to be send to the Kafka broker and more specifically the topic you've defined (kcloud-event-queue, in above example).
 
@@ -153,7 +153,7 @@ Once retrieved these data fields, we can build up the API call to the Kerberos V
 
 Open your browser and go to `http(s)://api.yourkerberostoragedomain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Vault API.
 
-![Kerberos Vault Swagger](images/kerberos-storage-swagger.png)
+![Kerberos Vault Swagger](images/vault-swagger.gif)
 
 Scroll down until you see the storage section, and find the `/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Vault provider (AWS, GCP, Azure, or Minio).
 
