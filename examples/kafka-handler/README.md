@@ -151,7 +151,7 @@ To do this we first have to retrieve the filename (key) from the message, and th
 
 Once retrieved these data fields, we can build up the API call to the Kerberos Vault API. However before proceeding we could have a look at the Swagger API which ships with Kerberos Vault API.
 
-Open your browser and go to `http(s)://api.yourkerberostoragedomain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Vault API.
+Open your browser and go to `http(s)://api.your-kerberos-vault-domain.com/swagger/index.html`. Following page should show up. The swagger page will show you all the available endpoints which you can use to interact with the Kerberos Vault API.
 
 ![Kerberos Vault Swagger](images/vault-swagger.gif)
 
