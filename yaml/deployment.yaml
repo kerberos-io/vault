@@ -24,48 +24,30 @@ spec:
         #imagePullPolicy: Always
         resources:
           limits:
-            memory: 1536Mi
+            memory: 1024Mi
         ports:
           - containerPort: 80
           - containerPort: 8081
+        envFrom:
+          - configMapRef:
+              name: mongodb
         env:
         - name: KERBEROS_LOGIN_USERNAME
           value: "root"
         - name: KERBEROS_LOGIN_PASSWORD
           value: "kerberos"
-        - name: KERBEROS_CLOUD_ENABLED
-          value: "true"
-        # By default the API will be served on api.vaultdomain.com (api.) is prefixed.
-        # If you prefer another hostname for the API e.g. myvaultapi-vaultdomain.com
-        # Enable and change this variable to "myvaultapi-vaultdomain.com"
-        #- name: STORAGE_API_URL
-        #  value: "myvaultapi-storagedomain.com"
-        - name: MONGODB_DATABASE_CLOUD
-          value: "Kerberos"
-        - name: MONGODB_DATABASE_FACTORY
-          value: "KerberosFactory"
-        - name: MONGODB_DATABASE_STORAGE
-          value: "KerberosStorage"
-        - name: MONGODB_HOST
-          value: "mongodb.mongodb"
-        - name: MONGODB_DATABASE_CREDENTIALS
-          value: "admin"
-        - name: MONGODB_USERNAME
-          value: "root"
-        - name: MONGODB_PASSWORD
-          value: "xxxxxxxxxx"
-        - name: LICENSE_API_URL
-          value: "https://license.kerberos.io/verify"
-        - name: LICENSE_PUBLIC_API_TOKEN
-          value: "214%ˆ#ddfsf@#3rfdsgl_)23sffeqasSwefDSFNBM"
-        - name : KERBEROS_CLOUD_QUEUE
-          value: "https://queue.cloud.kerberos.io"
+        # MQTT broker to be used for on-demand forwarding.
         - name : MQTTURI
           value: "tcp://mqtt.kerberos.io:1883"
         - name : MQTT_USERNAME
           value: ""
         - name : MQTT_PASSWORD
           value: ""
+        # By default the API will be served on api.vaultdomain.com (api.) is prefixed.
+        # If you prefer another hostname for the API e.g. myvaultapi-vaultdomain.com
+        # Enable and change this variable to "myvaultapi-vaultdomain.com"
+        #- name: STORAGE_API_URL
+        #  value: "myvaultapi-storagedomain.com"
 ---
 apiVersion: v1
 kind: Service
