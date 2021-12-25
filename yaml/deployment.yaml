@@ -96,7 +96,7 @@ metadata:
     #nginx.ingress.kubernetes.io/proxy-body-size: 200m
 spec:
   rules:
-    - host: vault.yourdomain.com
+    - host: vault.domain.com
       http:
         paths:
           - path: /
@@ -106,7 +106,7 @@ spec:
                 name: kerberos-vault
                 port:
                   number: 80
-    - host: api.vault.yourdomain.com #myvaultapi-storagedomain.com
+    - host: api.vault.domain.com #myvaultapi-storagedomain.com
       http:
         paths:
           - path: /
