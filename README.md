@@ -1,12 +1,12 @@
 # Kerberos Vault
 
-Kerberos Opensource and Kerberos Enterprise both store recordings on the local disk. To centralise your data at a single place, additional solutions are available. 
+Kerberos Agents store recordings on the local disk. To centralise your data at a single place, additional solutions are available. 
 
-## Kerberos Hub
-One or more Kerberos Enterprise agents, can store their data directly on [Kerberos Hub](https://doc.kerberos.io/hub/first-things-first/), and benefit from the visualisation layer Kerberos Hub offers. When doing this your recordings will be uploaded inside the Kerberos datacenter (which is a black box for you).
+## Kerberos Hub (Public edition)
+One or more Kerberos Agents, can store their data directly in [Kerberos Hub (Public)](https://doc.kerberos.io/hub/first-things-first/), and benefit from the visualisation layer Kerberos Hub offers. When doing this your recordings will be uploaded inside our internal Kerberos Vault (which is a black box for you).
 
 ## Kerberos Vault
-In addition to that, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to Kerberos Hub in parrallel. These storage provider could live in the cloud such as AWS S3, GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio.
+In addition to that, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to Kerberos Hub in parrallel. These storage provider could live in the cloud such as AWS S3,GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio or Ceph.
 
 ![Store at the edge with Kerberos Vault.](./images/vault-edge-storage.svg)
 
