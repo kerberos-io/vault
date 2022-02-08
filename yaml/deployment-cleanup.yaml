@@ -20,20 +20,11 @@ spec:
     spec:
       containers:
       - name: kerberos-vault-cleanup
-        image: kerberos/storage-cleanup:1.0.1
+        image: kerberos/vault-cleanup:1.0.2069514970
         imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: mongodb
         env:
         - name: MONGODB_DATABASE_CLOUD
           value: "Kerberos"
-        - name: MONGODB_DATABASE_FACTORY
-          value: "KerberosFactory"
-        - name: MONGODB_DATABASE_STORAGE
-          value: "KerberosStorage"
-        - name: MONGODB_HOST
-          value: "mongodb.mongodb"
-        - name: MONGODB_DATABASE_CREDENTIALS
-          value: "admin"
-        - name: MONGODB_USERNAME
-          value: "root"
-        - name: MONGODB_PASSWORD
-          value: "xxxxxxx"
