@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-vault-cleanup
-        image: kerberos/vault-cleanup:1.0.2069514970
+        image: kerberos/vault-cleanup:1.0.2069937294
         imagePullPolicy: Always
         envFrom:
           - configMapRef:
