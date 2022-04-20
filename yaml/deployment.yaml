@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-vault
-        image: kerberos/vault:1.0.474693441
+        image: kerberos/vault:1.0.505032724
         #imagePullPolicy: Always
         resources:
           limits:
@@ -31,6 +31,11 @@ spec:
         envFrom:
           - configMapRef:
               name: mongodb
+        # Injecting the ca-certificates inside the container.
+        #volumeMounts:
+        #- name: rootcerts
+        #  mountPath: /etc/ssl/certs/ca-certificates.crt
+        #  subPath: ca-certificates.crt
         env:
         - name: KERBEROS_LOGIN_USERNAME
           value: "root"
@@ -48,6 +53,10 @@ spec:
         # Enable and change this variable to "myvaultapi-vaultdomain.com"
         #- name: STORAGE_API_URL
         #  value: "myvaultapi-storagedomain.com"
+      #volumes:
+      #- name: rootcerts
+      #  configMap:
+      #    name: rootcerts
 ---
 apiVersion: v1
 kind: Service
