@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kerberos-vault-cleanup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kerberos-vault-cleanup
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: kerberos-vault-cleanup
+    spec:
+      containers:
+      - name: kerberos-vault-cleanup
+        image: kerberos/vault-cleanup:1.0.2071859920
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: mongodb
+        env:
+        - name: MONGODB_DATABASE_CLOUD
+          value: "Kerberos"
