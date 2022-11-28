@@ -2,6 +2,22 @@ version: '3'
 
 services:
 
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   kerberos-vault:
     image: 'kerberos/vault:latest'
     restart: always
@@ -25,14 +41,14 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
-      - 'traefik.http.routers.kerberos-vault.entrypoints=websecure'
-      - 'traefik.http.routers.kerberos-vault.tls=true'
+      - 'traefik.http.routers.kerberos-vault.entrypoints=web'
+      - 'traefik.http.routers.kerberos-vault.tls=false'
       - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
       - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
       - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
       - 'traefik.http.routers.kerberos-vault-api.rule=Host(`kerberos-vault-api.domain.tld`)'
-      - 'traefik.http.routers.kerberos-vault-api.entrypoints=websecure'
-      - 'traefik.http.routers.kerberos-vault-api.tls=true'
+      - 'traefik.http.routers.kerberos-vault-api.entrypoints=web'
+      - 'traefik.http.routers.kerberos-vault-api.tls=false'
       - 'traefik.http.routers.kerberos-vault-api.tls.certresolver=leresolver'
       - "traefik.http.routers.kerberos-vault-api.service=kerberos_vault_api"
       - 'traefik.http.services.kerberos_vault_api.loadbalancer.server.port=8081'

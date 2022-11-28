@@ -2,6 +2,9 @@
 
 Kerberos Vault can also be installed without a Kubernetes cluster, by leveraging plain Docker containers or `docker compose`. In this example we'll show how to setup Kerberos Vault and it's required service MongoDB.
 
+- [ ] Implement TLS binding with Traefik
+- [ ] Move to Docker volume
+
 ## In this example we'll be using a clean VM
 
 We've created an Ubuntu 20.04 (LTS) VM on DigitalOcean, and installed `docker` and `docker-compose` using the general installation.
@@ -25,17 +28,6 @@ Make sure you'll locate the `cluster-net` network.
     -> 75007810f24b   cluster-net   bridge    local
        4391b62e250d   host          host      local
        d5a219a216f5   none          null      local
-
-## Download and configure Traefik
-
-To access the KErberos Vault application we'll need an `Ingress`, therefore we'll use `Traefik`; however `nginx` would also work out.
-
-    wget https://raw.githubusercontent.com/traefik/traefik/v2.9/traefik.sample.yml -O traefik.yml
-
-Run the `Traefik` container in deamon mode.
-
-    docker run -d -p 8080:8080 -p 80:80 \
-    -v $PWD/traefik.yml:/etc/traefik/traefik.yml traefik:v2.9
 
 ## Create host volumes
 
