@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  kerberos-vault:
+    image: 'kerberos/vault:latest'
+    restart: always
+    container_name: 'kerberos-vault'
+    hostname: 'kerberos-vault'
+    ports:
+      - '80'
+      - '8081'
+    volumes:
+      - "./vault:/vault"
+    environment:
+      - GIN_MODE=release
+      - STORAGE_API_URL=kerberos-vault-api.domain.tld
+      - KERBEROS_LOGIN_USERNAME=root
+      - KERBEROS_LOGIN_PASSWORD=pass
+      - MONGODB_HOST=kerberos-mongo
+      - MONGODB_DATABASE_CREDENTIALS=admin
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=pass
+      - MONGODB_DATABASE_STORAGE=KerberosStorage
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
+      - 'traefik.http.routers.kerberos-vault.entrypoints=websecure'
+      - 'traefik.http.routers.kerberos-vault.tls=true'
+      - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
+      - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
+      - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
+      - 'traefik.http.routers.kerberos-vault-api.rule=Host(`kerberos-vault-api.domain.tld`)'
+      - 'traefik.http.routers.kerberos-vault-api.entrypoints=websecure'
+      - 'traefik.http.routers.kerberos-vault-api.tls=true'
+      - 'traefik.http.routers.kerberos-vault-api.tls.certresolver=leresolver'
+      - "traefik.http.routers.kerberos-vault-api.service=kerberos_vault_api"
+      - 'traefik.http.services.kerberos_vault_api.loadbalancer.server.port=8081'
+
+  kerberos-mongo:
+    image: 'mongo:4.4.16'
+    container_name: 'kerberos-mongo'
+    hostname: 'kerberos-mongo'
+    ports:
+      - 27017
+    volumes:
+      - ./mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+
+volumes:
+  kerberos-data:
+
+networks:
+  default:
+      name: cluster-net
+      external: true
