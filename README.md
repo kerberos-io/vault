@@ -43,7 +43,7 @@ A couple of [integrations and extensions can be found in the `examples` folder](
 
 ## Introductions
 
-Please note that we have added a brief introduction to Kerberos Vault and Kerberos Hub below. To get a complete overview [visit the documentation page](https://docs.kerberos.io), where you will be able to learn about all the ins and outs of the Kerberos.io ecosystem.
+Please note that we have added a brief introduction to Kerberos Vault and Kerberos Hub below. To get a complete overview [visit the documentation page](https://doc.kerberos.io), where you will be able to learn about all the ins and outs of the Kerberos.io ecosystem.
 
 ### Kerberos Vault
 In addition to storing recordings in your Kerberos Agents, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to your Kerberos Agents and Kerberos Hub installation. These storage provider could live in the cloud such as AWS S3,GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio or Ceph.
