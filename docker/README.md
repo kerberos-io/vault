@@ -38,12 +38,49 @@ To persist our date outside our containers, we'll make a few directories on our 
 
 ## Run the workloads
 
-Now we are ready to ...
+Now we are ready to start the `docker compose` configuration. While creating we will create several services:
+
+- Traefik: will be used an `Ingress` to reach our other services.
+- Kerberos Vault: The application that stores recordings from Kerberos Agent in a storage provider; minio for this example.
+- Minio: The local object storage we are setting up.
+- MongoDB: Kerberos Vault will store some metadata in a MongoDB instance.
+
+Create the services using the `create` command.
+
+    docker compose create
+
+One created you can activate the services with the `up` command.
 
     docker compose up
 
 ## Modify host files
 
-Now add some records to your `/etc/hosts` file, so you can reach the Kerberos Vault instance (and API) through your predefined DNS name.
+Now add some records to your `/etc/hosts` file, so you can reach the Kerberos Vault instance (and API) and Minio console, through your predefined DNS name.
 
-    178.xxx.xxx.41 kerberos-vault-api.domain.tld kerberos-vault.domain.tld
+    178.xxx.xxx.41 kerberos-vault-api.domain.tld kerberos-vault.domain.tld minio-console.domain.tld 
+
+## Let's configure it!
+
+Now the services are up and running, you should be able to access both the Kerberos Vault application as the Minio console. You can access both applications using the credentials specified in the `environment` variables.
+
+### Open Minio Console
+
+Open your favourite browser, and open the Minio Console - `http://minio-console.domain.tld `. You should see the Minio console showing up; depending on your version this might look different.
+
+![Minio console](assets/minio-console.png)
+
+Use the credentials you've defined for the Minio service. By default this is `ROOTNAME` and `CHANGEME123`. Please change that for your own configuration. Once signed in successfully, move over to the `Buckets` page by selecting the navigation item.
+
+Once opened, select the `Create Bucket +` button to create a new bucket, propose a name of your preference. 
+
+![Minio create bucket](assets/minio-create-bucket.png)
+
+#### (Optional) Create Access Keys
+
+By default you'll be able to use your Minio username and password; as you used to sign into the console. However it's a better practice to create some Access keys (and secret key). Open the `Access Keys` page by selecting the navigation item, once opened press the `Create access key+` button. 
+
+Some proposal keys are shown, modify or use as-is, copy them for your availability.
+
+### Configure Kerberos Vault
+
+To be written
