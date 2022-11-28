@@ -65,6 +65,37 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
 
+  minio:
+    image: 'quay.io/minio/minio'
+    container_name: 'minio'
+    hostname: 'minio'
+    command: server /data --console-address ":9090"
+    ports:
+      - 9000
+      - 9090
+    volumes:
+      - ./minio:/data
+    environment:
+      - MINIO_ROOT_USER=ROOTNAME
+      - MINIO_ROOT_PASSWORD=CHANGEME123
+      - MINIO_DOMAIN=domain.tld
+      - MINIO_DOMAINS=domain.tld
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.minio.rule=Host(`minio.domain.tld`)'
+      - 'traefik.http.routers.minio.entrypoints=web'
+      - 'traefik.http.routers.minio.tls=false'
+      - 'traefik.http.routers.minio.tls.certresolver=leresolver'
+      - "traefik.http.routers.minio.service=minio"
+      - 'traefik.http.services.minio.loadbalancer.server.port=9000'
+      - 'traefik.http.routers.minio-console.rule=Host(`minio-console.domain.tld`)'
+      - 'traefik.http.routers.minio-console.entrypoints=web'
+      - 'traefik.http.routers.minio-console.tls=false'
+      - 'traefik.http.routers.minio-console.tls.certresolver=leresolver'
+      - "traefik.http.routers.minio-console.service=minio-console"
+      - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
+    
+
 volumes:
   kerberos-data:
 
