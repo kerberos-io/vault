@@ -105,3 +105,24 @@ Select the option `Minio` from the dropdown and fill-in the required fields.
 - SSL enabled: keep this disabled, as we didn't implement it.
 
 Press the `validate` button, you should see a green confirmation box at the top. If not you should verify in the logs what might be going wrong.
+
+### Add an account
+
+Now we have create a storage provider, we'll need to provide access to that provider by creatign an account. An account contains credentials that can be used by a Kerberos Agents in the storage provider, in other words an account protects a storage provider from the outside, and only allows operations on it by using the correct account credentials.
+
+Open the account page, by selectig the `Accounts` navigation item. Select the `+ Add Account` button. Fill-in the required fields to create an account.
+
+![Kerberos Vault account](assets/kerberosvault-addaccount.png)
+
+- Account name: an unique name that matches your needs.
+- Main provider: select the provider we have created.
+- Day limit: the life time of a recording; number of days it will be persisted.
+- Integrations: a message broker that will be triggered on receival of a recording.
+- Directory: set it `*`, this wildcard option allow you to leverage it for multiple users or sub directories.
+- Access Key and Secret Key: Press the `Generate` button, to get some strong keys.
+- Cloud analysis: Disabled, not necessary if you do not connect ot Kerberos Hub.
+- Edge analysis: Disabled, not required.
+
+## You're done!
+
+Now you are ready setting up Kerberos Vault with Minio! It's time to connect some Kerberos Agents! Let's have a look here how to do that.
