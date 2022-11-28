@@ -1,6 +1,6 @@
 # Kerberos Vault
 
-Kerberos Agents store recordings on the local disk. To centralise your data at a single place, additional solutions are available such as Kerberos Vault and Kerberos Hub. This repository covers the installation and configuration of Kerberos Vault. To have [a better understanding of Kerberos Vault](https://doc.kerberos.io/vault/first-things-first/) move to the documentation page of Kerberos Vault, which will give you an introduction and overview of the solution and its capabilities. However to avoid you switching too much between pages, we've [added a short introduction below](#intro-kerberos-vault).
+Kerberos Agents store recordings on the local disk. To centralise your data at a single place, additional solutions are available such as Kerberos Vault and Kerberos Hub. This repository covers the installation and configuration of Kerberos Vault. To have [a better understanding of Kerberos Vault](https://doc.kerberos.io/vault/first-things-first/) move to the documentation page of Kerberos Vault, which will give you an introduction and overview of the solution and its capabilities. However to avoid you switching too much between pages, we've [added a short introduction below](#introductions).
 
 ## :thinking: Prerequisites
 
@@ -17,9 +17,9 @@ Kerberos Agents store recordings on the local disk. To centralise your data at a
 3. [Integrations and extensions](#integrations-and-extensions)
    
 ### Introductions
-4. [Intro: Kerberos Vault](#intro-kerberos-vault)
-5. [Intro: Kerberos Hub](#intro-kerberos-vault)
-6. [Mission](#mission)
+1. [Intro: Kerberos Vault](#kerberos-vault)
+2. [Intro: Kerberos Hub](#kerberos-hub)
+3. [Mission](#mission)
    
 ## Installation
 
@@ -41,14 +41,18 @@ If you consider a production proof and ready environment, `Kubernetes` will prov
 
 A couple of [integrations and extensions can be found in the `examples` folder](examples). These examples illustrates how the Kerberos Vault API is working, and how it can be used to develop custom algorithms or applications.
 
-## Intro: Kerberos Vault
+## Introductions
+
+Please note that we have added a brief introduction to Kerberos Vault and Kerberos Hub below. To get a complete overview [visit the documentation page](https://docs.kerberos.io), where you will be able to learn about all the ins and outs of the Kerberos.io ecosystem.
+
+### Kerberos Vault
 In addition to storing recordings in your Kerberos Agents, you have the option to Bring Your Own Storage (BYOS), using [Kerberos Vault](https://doc.kerberos.io/vault/get-started/). Kerberos Vault allows you to configure the storage providers you want (where you data will be persisted), and allows you to connect to your Kerberos Agents and Kerberos Hub installation. These storage provider could live in the cloud such as AWS S3,GCP storage and Azure Blob store, or can be located on premise - at the edge - such as Minio or Ceph.
 
 Despite the flexible storage capabilities, Kerberos Vault is also an open platform, which can be used to build extensions (mobile apps, web apps, machine learning services, etc) and integrations. It allows you to leverage a scalable and stable system as a strong backbone for your video analytics solutions, machine learning algorithms, and more.
 
 ![Kerberos Vault allows you to integrate.](./images/vault-integrations.svg)
 
-### Intro: Kerberos Hub 
+### Kerberos Hub 
 
 One or more Kerberos Agents, can store their data directly in [Kerberos Hub SAAS service](https://doc.kerberos.io/hub/first-things-first/), and benefit from the visualisation layer Kerberos Hub offers. When doing this your recordings will be uploaded inside our internal Kerberos Vault (which is a black box for you). Alterantively you could bring your own Kerberos Vault, and connect it to our Kerberos Hub SAAS service, or even to your own Kerberos Hub private installation.
 
