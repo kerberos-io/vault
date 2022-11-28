@@ -59,11 +59,11 @@ Now add some records to your `/etc/hosts` file, so you can reach the Kerberos Va
 
     178.xxx.xxx.41 kerberos-vault-api.domain.tld kerberos-vault.domain.tld minio-console.domain.tld 
 
-## Let's configure it!
+# Let's configure it!
 
 Now the services are up and running, you should be able to access both the Kerberos Vault application as the Minio console. You can access both applications using the credentials specified in the `environment` variables.
 
-### Open Minio Console
+## Open Minio Console
 
 Open your favourite browser, and open the Minio Console - `http://minio-console.domain.tld `. You should see the Minio console showing up; depending on your version this might look different.
 
@@ -75,12 +75,33 @@ Once opened, select the `Create Bucket +` button to create a new bucket, propose
 
 ![Minio create bucket](assets/minio-create-bucket.png)
 
-#### (Optional) Create Access Keys
+### (Optional) Create Access Keys
 
 By default you'll be able to use your Minio username and password; as you used to sign into the console. However it's a better practice to create some Access keys (and secret key). Open the `Access Keys` page by selecting the navigation item, once opened press the `Create access key+` button. 
 
 Some proposal keys are shown, modify or use as-is, copy them for your availability.
 
-### Configure Kerberos Vault
+## Configure Kerberos Vault
 
-To be written
+Open a new tab in your browser and paste in the Kerberos Vault url `http://kerberos-vault.domain.tld`. The login page will show up, use the credentials you've defined for Kerberos Vault, by default this is `root` and `pass`; please modify this to your needs.
+
+![Kerberos Vault login](assets/kerberosvault-login.png)
+
+### Add a storage provider
+
+To store your data, Kerberos Vault, leverages other storage solutions such as (MinIO, Storj, S3, Google Cloud Storage, Ceph, etc) to store your data. In that sense Kerberos Vault acts as a proxy between your Kerberos Agents and the persistence layer. By doing that Kerberos Vault decouples persistence from your Kerberos Agents, and allows you to switch persistence on-the-fly. Next to this there are many more advantages such as caching, forwarding, etc.
+
+Open the `Storage Providers` page, by selecting the navigation item. Select the `+ Add Storage Provider` button, to create a new storage provider.
+
+![Kerberos Vault provider](assets/kerberosvault-addprovider.png)
+
+Select the option `Minio` from the dropdown and fill-in the required fields.
+
+- Provider name: an unique name that matches your needs.
+- Bucket name: the name of the bucket you created in Minio.
+- Region: not required, use `na`; stands for notapplicable.
+- Hostname: this should match the minio service name, for this configuration it would be `minio:9000`, as we run minio on port `9000`.
+- Access key and Secret key: the keys you have created in the optional step, or the username and password you've provided to access the console.
+- SSL enabled: keep this disabled, as we didn't implement it.
+
+Press the `validate` button, you should see a green confirmation box at the top. If not you should verify in the logs what might be going wrong.
