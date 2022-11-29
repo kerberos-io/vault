@@ -12,6 +12,22 @@ This installation guide will slight modify depending on if you are self-hosting 
 
 ![Kerberos Vault deployments](assets/kerberosvault-deployments.svg)
 
+## :books: Overview
+
+### A. Managed Kubernetes
+1. [Prerequisites](#prerequisites)
+2. [Introduction](#introduction)
+3. [Kerberos Vault](#kerberos-vault)
+4. [Namespace](#namespace)
+5. [Helm](#helm)
+6. [Traefik](#traefik)
+7. [Ingress-Nginx (alternative for Traefik)](#ingress-nginx-alternative-for-traefik)
+
+
+### B. Self-hosted Kubernetes
+1. [Integrations and extensions](#integrations-and-extensions)
+   
+
 ## A. Managed Kubernetes
 
 To simplify the installation we will start with the most common setup, where we will install Kerberos Vault on a managed Kubernetes services.
@@ -40,7 +56,7 @@ If you plan to run Kerberos Vault in a different cluster (which is perfectly pos
 
 We'll assume you are starting an installation from scratch and therefore still need to install and configure previously mentioned components.
 
-### Clone Kerberos Vault
+### Kerberos Vault
 
 We'll start by cloning the configurations from our [Github repo](https://github.com/kerberos-io/vault). This repo contains all the relevant configuration files required.
 
@@ -357,7 +373,7 @@ Once installed, all services created in your Kubernetes cluster will receive an 
 
 ### OpenEBS
 
-Some of the services we'll leverage such as MongoDB or Minio leverage some storage, to persist their data safely. In a managed Kubernetes cluster, the relevant cloud provider will allocate storage automatically for you, as you might expect this is not the case for a self-hosted cluster.
+Some of the services we'll leverage such as MongoDB or Minio require storage, to persist their data safely. In a managed Kubernetes cluster, the relevant cloud provider will allocate storage automatically for you, as you might expect this is not the case for a self-hosted cluster.
 
 Therefore we will need to prepare some storage or persistent volume. To simplify this we can leverage the OpenEBS storage solution, which can automatically provision PV (Persistent volumes) for us.
 
@@ -381,3 +397,7 @@ Once you are ok with the `BasePath` go ahead and apply the operator.
     kubectl apply -f openebs-operator.yaml
 
 Once done it should start installing several resources in the `openebs` namespace. If all resources are created successfully we can launch the `helm install` for MongoDB.
+
+### Proceed with managed Kubernetes
+
+Now you're done with installing the self-hosted prerequisites, you should be able to proceed with the [A. Managed Kubernetes](#a-managed-kubernetes) section. This will install all the remaining resources.
