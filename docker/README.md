@@ -7,7 +7,24 @@ There are still some tweaks and works to do (see below), to make this setup more
 - [ ] Implement TLS binding with Traefik
 - [ ] Move to Docker volume
 
-## In this example we'll be using a clean VM
+## :books: Overview
+
+1. [Prerequisites](#prerequisites)
+2. [Setup networking](#setup-networking)
+3. [Create host volumes](#create-host-volumes)
+4. [Run the workloads](#run-the-workloads)
+5. [Modify host files](#modify-host-files)
+
+### Let's configure it!
+
+6. [Open Minio Console](#open-minio-console)
+7. [(Optional) Create Access Keys)](#optional-create-access-keys)
+8. [Configure Kerberos Vault](#configure-kerberos-vault)
+9. [Add a storage provider](#add-a-storage-provider)
+10.  [Add an account](#add-an-account)
+11.  [You're done!](#youre-done)
+
+## Prerequisites
 
 We've created an Ubuntu 20.04 (LTS) VM on DigitalOcean, and installed `docker` and `docker-compose` using the general installation. Follow [Docker installation here.](https://docs.docker.com/engine/install/ubuntu/)
 
