@@ -22,11 +22,23 @@ This installation guide will slight modify depending on if you are self-hosting 
 5. [Helm](#helm)
 6. [Traefik](#traefik)
 7. [Ingress-Nginx (alternative for Traefik)](#ingress-nginx-alternative-for-traefik)
-
+8. [MongoDB](#mongodb)
+9. [Config Map](#config-map)
+10. [Deployment](#deployment)
+11. [Test out configuration](#test-out-configuration)
+12. [Access the system](#access-the-system)
 
 ### B. Self-hosted Kubernetes
-1. [Integrations and extensions](#integrations-and-extensions)
-   
+1. [Prerequisites](#prerequisites-1)
+2. [Docker](#docker)
+3. [Kubernetes](#kubernetes)
+4. [Untaint all nodes](#untaint-all-nodes)
+5. [Calico](#calico)
+6. [Introduction](#introduction-1)
+7. [Kerberos Vault](#kerberos-vault-1)
+8. [MetalLB](#metallb)
+9. [OpenEBS](#openebs)
+10. [Proceed with managed Kubernetes](#proceed-with-managed-kubernetes)
 
 ## A. Managed Kubernetes
 
@@ -332,7 +344,7 @@ However for a self-hosted cluster, we'll need following components on top:
 
 For simplicity we'll start with the installation of `MetalLB` and `OpenEBS`. Afterwards we'll move back to the `A. Managed Kubernetes` section, to install the remaining components.
 
-### Clone Kerberos Vault
+### Kerberos Vault
 
 We'll start by cloning the configurations from our [Github repo](https://github.com/kerberos-io/vault). This repo contains all the relevant configuration files required.
 
