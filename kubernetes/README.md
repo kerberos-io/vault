@@ -212,7 +212,7 @@ We'll assume you have a blank Ubuntu 20.04 LTS machine (or multiple machines/nod
 
     apt-get update -y && apt-get upgrade -y
 
-#### Docker
+### Docker
 
 Let's install our container runtime `docker` so we can run our containers.
 
@@ -236,7 +236,7 @@ Once installed modify the `cgroup driver`, so kubernetes will be using it correc
     sudo systemctl daemon-reload
     sudo systemctl restart docker
 
-#### Kubernetes
+### Kubernetes
 
 After Docker being installed go ahead and install the different Kubernetes servicess and tools.
 
@@ -253,3 +253,52 @@ Make sure you disable swap, this is required by Kubernetes.
 And if you want to make it permanent after every boot.
 
     sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+## Installation
+
+Before initiating a new Kubernetes cluster, make sure you have properly cleaned up previous installation (if this was the case ofc).
+
+    kubeadm reset
+    rm -rf $HOME/.kube
+
+Initiate a new Kubernetes cluster using following command. This will use the current CIDR. If you want to use another CIDR, specify following arguments: `--pod-network-cidr=10.244.0.0/16`.
+
+    kubeadm init
+
+Once successful you should see the following. Note the `discovery token` which you need to use to connect additional nodes to your cluster.
+
+    Your Kubernetes control-plane has initialized successfully!
+
+    To start using your cluster, you need to run the following as a regular user:
+
+      mkdir -p $HOME/.kube
+      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+      sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+    You should now deploy a pod network to the cluster.
+    Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+      https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+    Then you can join any number of worker nodes by running the following on each as root:
+
+    kubeadm join 192.168.1.103:6443 --token ej7ckt.uof7o2iplqf0r2up \
+        --discovery-token-ca-cert-hash sha256:9cbcc00d34be2dbd605174802d9e52fbcdd617324c237bf58767b369fa586209
+
+Now we have a Kubernetes cluster, we need to make sure we add make it available in our `kubeconfig`. This will allow us to query our Kubernetes cluster with the `kubectl` command.
+
+    mkdir -p $HOME/.kube
+    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    chown $(id -u):$(id -g) $HOME/.kube/config
+
+### Untaint all nodes
+
+By default, and in this example, we only have one node our master node. In a production scenario we would have additional worker nodes. By default the master nodes are marked as `tainted`, this means they cannot run workloads. To allow master nodes to run workloads, we need to untaint them. If we wouldn't do this our pods would never be scheduled, as we do not have worker nodes at this moment.
+
+    kubectl taint nodes --all node-role.kubernetes.io/master-
+
+### Calico
+
+Calico is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. (https://www.projectcalico.org/). We will use it as our network layer in our Kubernetes cluster. You could use otthers like Flannel aswell, but we prefer Calico.
+
+    curl https://docs.projectcalico.org/manifests/calico.yaml -O
+    kubectl apply -f calico.yaml
