@@ -186,4 +186,4 @@ It should look like this.
 
 Once everything is configured correctly your cluster and DNS or `/etc/hosts` file, you should be able to access the Kerberos Vault application. By navigating to the domain `vault.domain.com` in your browser you will see the Kerberos Vault login page showing up.
 
-{{< figure src="./assets/login.gif" alt="Once successfully installed Kerberos Vault, it will show you the login page." caption="Once successfully installed Kerberos Vault, it will show you the login page." class="stretch">}}
+![Once successfully installed Kerberos Vault, it will show you the login page.](assets/login.gif)
