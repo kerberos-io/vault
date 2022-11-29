@@ -9,9 +9,7 @@ There are still some tweaks and works to do (see below), to make this setup more
 
 ## In this example we'll be using a clean VM
 
-We've created an Ubuntu 20.04 (LTS) VM on DigitalOcean, and installed `docker` and `docker-compose` using the general installation.
-
-[Follow Docker installation here](https://docs.docker.com/engine/install/ubuntu/)
+We've created an Ubuntu 20.04 (LTS) VM on DigitalOcean, and installed `docker` and `docker-compose` using the general installation. Follow [Docker installation here.](https://docs.docker.com/engine/install/ubuntu/)
 
 ## Setup networking
 
