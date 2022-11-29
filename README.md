@@ -27,7 +27,7 @@ For installing Kerberos Vault, we propose two different installation methods. De
 
 ### Docker
 
-So you have home setup, or just want to try this out for a POC, then the `Docker` installation would be more suitable. This will safe you some time setting up a complete `Kubernetes` cluster.
+So you have a home setup, or just want to try Kerberos Vault out for a quick POC, then the `Docker` installation would be more suitable. This will safe you some time setting up a complete `Kubernetes` cluster.
 
 > Follow the `Docker` tutorial [by navigating to the docker sub folder in this repostitory](docker/).
 
