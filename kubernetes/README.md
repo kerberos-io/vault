@@ -254,9 +254,7 @@ And if you want to make it permanent after every boot.
 
     sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-## Installation
-
-Before initiating a new Kubernetes cluster, make sure you have properly cleaned up previous installation (if this was the case ofc).
+***Special note***: If you already had Kubernetes installed, make sure you are running latest version and/or have properly cleaned up previous installation.
 
     kubeadm reset
     rm -rf $HOME/.kube
