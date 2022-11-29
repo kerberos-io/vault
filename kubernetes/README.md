@@ -12,11 +12,21 @@ This installation guide will slight modify depending on if you are self-hosting 
 
 ![Kerberos Vault deployments](assets/kerberosvault-deployments.svg)
 
-## Managed Kubernetes
+## A. Managed Kubernetes
 
 To simplify the installation we will start with the most common setup, where we will install Kerberos Vault on a managed Kubernetes services.
 
-As of now there are many cloud providers such as, but not limited too, Azure, Google Cloud, AWS, and many more. Each cloud provider has build a management service on top of Kubernetes which takes over the heavy lifting of managing a cluster yourself. It makes specific resources such as built-in loadbalancers, storage, and more availble for your needs. The cloud provider manages all the complex things for you in the back-end and implements features such as 
+As of now there are many cloud providers such as, but not limited too, Azure, Google Cloud, AWS, and many more. Each cloud provider has build a management service on top of Kubernetes which takes over the heavy lifting of managing a cluster yourself. It makes specific resources such as built-in loadbalancers, storage, and more availble for your needs. The cloud provider manages all the complex things for you in the back-end and implements features such as load balancing, data replication etc.
+
+### Prerequisites
+
+For this installation we assume you have chosen a specific cloud provider that provides you with a manager Kubernetes. We'll assume you have the relevant `.kubeconfig` configuration to be able to connect the api server of your Kubernetes installation. Make sure you can run following commands on you cluster.
+
+    kubectl get nodes
+
+or
+
+    kubectl get pods --all-namespaces
 
 ### Introduction
 
@@ -28,7 +38,7 @@ If you plan to run Kerberos Vault in a different cluster (which is perfectly pos
 - MongoDB
 - Traefik (or alternatively Nginx ingress)
 
-We'll assume you are starting an installation from scratch and therefore install the prerequisites first.
+We'll assume you are starting an installation from scratch and therefore still need to install and configure previously mentioned components.
 
 ### Clone Kerberos Vault
 
@@ -48,7 +58,7 @@ A best practices is to isole tools and/or applications in a namespace, this will
 
 This namespace will later be used to deploy the relevant services for Kerberos Vault.
 
-### Prerequisite: Helm
+### Helm
 
 Next we will install a couple of dependencies which are required for Kerberos Vault. [**Helm**](https://helm.sh/) is a package manager for Kubernetes, it helps you to set up services more easily (this could be a MQTT broker, a database, etc).
 Instead of writing yaml files for every service we need, we use so-called Charts (libraries), that you can reuse and configure the, with the appropriate settings.
@@ -63,7 +73,7 @@ Use one of the preferred OS package managers to install the Helm client:
 
     gofish install helm
 
-### Prerequisite: Traefik
+### Traefik
 
 [**Traefik**](https://containo.us/traefik/) is a reverse proxy and load balancer which allows you to expose your deployments more easily. Kerberos uses Traefik to expose its APIs more easily.
 
@@ -84,7 +94,7 @@ After installation, you should have an IP attached to Traefik service, look for 
 
 Go to your DNS provider and link the domain you've configured in the first step `traefik.domain.com` to the IP address of thT `EXTERNAL-IP` attribute. When browsing to `traefik.domain.com`, you should see the traefik dashboard showing up.
 
-### Prerequisite: Ingress-Nginx (alternative for Traefik)
+### Ingress-Nginx (alternative for Traefik)
 
 If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
 
@@ -93,7 +103,7 @@ If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
     kubectl create namespace ingress-nginx
     helm install ingress-nginx -n ingress-nginx ingress-nginx/ingress-nginx
 
-### Prerequisite: MongoDB
+### MongoDB
 
 When using Kerberos Vault, it will persist references to the recordings stored in your storage provider in a MongoDB database. As used before, we are using `helm` to install MongoDB in our Kubernetes cluster.
 
@@ -101,8 +111,10 @@ Have a look into the `./mongodb/values.yaml` file, you will find plenty of confi
 
     helm repo add bitnami https://charts.bitnami.com/bitnami
     kubectl create namespace mongodb
-    helm install mongodb -n mongodb bitnami/mongodb --values ./mongodb/values.yaml
 
+Note: If you are installing a self-hosted Kubernetes cluster, we recommend using `openebs`. Therefore make sure to uncomment the `global`.`storageClass` attribute, and make sure it's using `openebs-hostpath` instead.
+
+    helm install mongodb -n mongodb bitnami/mongodb --values ./mongodb/values.yaml
 
 Once installed successfully, we should verify if the password has been set correctly. Print out the password using `echo $MONGODB_ROOT_PASSWORD` and confirm the password is what you've specified in the `values.yaml` file.
 
@@ -123,7 +135,6 @@ Modify the MongoDB credentials in the `./mongodb/mongodb.config.yaml`, and make 
 Create the config map.
 
     kubectl apply -f ./mongodb/mongodb.config.yaml -n kerberos-vault
-
 
 ### Deployment
 
@@ -187,3 +198,58 @@ It should look like this.
 Once everything is configured correctly your cluster and DNS or `/etc/hosts` file, you should be able to access the Kerberos Vault application. By navigating to the domain `vault.domain.com` in your browser you will see the Kerberos Vault login page showing up.
 
 ![Once successfully installed Kerberos Vault, it will show you the login page.](assets/login.gif)
+
+
+## B. Self-hosted Kubernetes
+
+You might have the requirement to self-host your Kubernetes cluster due to various good reasons. In this case the installation of Kerberos Vault will be slightly "more" difficult, in the sense that specific resources are not available by default; compared to the managed Kubernetes installation.
+
+The good things is that installation of a self-hosted Kubernetes cluster, contains the same steps as a managed Kubernetes installation with a few extra resources on top. 
+
+### Prerequisites
+
+We'll assume you have a blank Ubuntu 20.04 LTS machine (or multiple machines/nodes) at your posession. We'll start with updating the Ubuntu operating system.
+
+    apt-get update -y && apt-get upgrade -y
+
+#### Docker
+
+Let's install our container runtime `docker` so we can run our containers.
+
+    apt install docker.io -y
+
+Once installed modify the `cgroup driver`, so kubernetes will be using it correctly. By default Kubernetes cgroup driver was set to systems but docker was set to systemd.
+
+    sudo mkdir /etc/docker
+    cat <<EOF | sudo tee /etc/docker/daemon.json
+    {
+      "exec-opts": ["native.cgroupdriver=systemd"],
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m"
+      },
+      "storage-driver": "overlay2"
+    }
+    EOF
+    
+    sudo systemctl enable docker
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+#### Kubernetes
+
+After Docker being installed go ahead and install the different Kubernetes servicess and tools.
+
+    apt update -y
+    apt install apt-transport-https curl -y
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
+    apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+    apt update -y && apt install kubeadm kubelet kubectl kubernetes-cni -y
+
+Make sure you disable swap, this is required by Kubernetes.
+
+    swapoff -a
+
+And if you want to make it permanent after every boot.
+
+    sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab

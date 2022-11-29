@@ -16,7 +16,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
-  storageClass: ""
+  storageClass: "" # "openebs-hostpath" # or other..
   namespaceOverride: ""
 
 ## @section Common parameters
