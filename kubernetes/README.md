@@ -300,3 +300,84 @@ Calico is an open source networking and network security solution for containers
 
     curl https://docs.projectcalico.org/manifests/calico.yaml -O
     kubectl apply -f calico.yaml
+
+### Introduction
+
+As you might have read in the `A. Managed Kubernetes` section, Kerberos Vault requires some initial components to be installed.
+
+- Helm
+- MongoDB
+- Traefik (or alternatively Nginx ingress)
+
+However for a self-hosted cluster, we'll need following components on top:
+
+- MetalLB
+- OpenEBS
+
+For simplicity we'll start with the installation of `MetalLB` and `OpenEBS`. Afterwards we'll move back to the `A. Managed Kubernetes` section, to install the remaining components.
+
+### Clone Kerberos Vault
+
+We'll start by cloning the configurations from our [Github repo](https://github.com/kerberos-io/vault). This repo contains all the relevant configuration files required.
+
+    git clone https://github.com/kerberos-io/vault
+
+Make sure to change directory to the `kubernetes` folder.
+
+    cd kubernetes
+
+### MetalLB
+
+In a self-hosted scenario, we do not have fancy Load balancers and Public IPs from which we can "automatically" benefit. To overcome thism, solutions such as MetalLB - Baremetal Load Balancer - have been developed (https://metallb.universe.tf/installation/). MetalLB will dedicate an internal IP address, or IP range, which will be assigned to one or more Load Balancers. Using this dedicated IP address, you can reach your services or ingress.
+
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/namespace.yaml
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/metallb.yaml
+    kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+
+After installing the different MetalLB components, we need to modify a `configmap.yaml` file, which you can find here `./metallb/configmap.yaml`. This file contains information of how MetalLB can get and use internal IP's as LoadBalancers.
+
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        namespace: metallb-system
+        name: config
+      data:
+        config: |
+          address-pools:
+          - name: default
+            protocol: layer2
+            addresses:
+    -->     - 192.168.1.200-192.168.1.210
+
+You can change the IP range above to match your needs. MetalLB will use this range as a reference to assign IP addresses to your LoadBalancers. Once ready you can apply the configuration map.
+
+    kubectl apply -f ./metallb/configmap.yaml
+
+Once installed, all services created in your Kubernetes cluster will receive an unique IP address as configured in the `configmap.yaml`.
+
+### OpenEBS
+
+Some of the services we'll leverage such as MongoDB or Minio leverage some storage, to persist their data safely. In a managed Kubernetes cluster, the relevant cloud provider will allocate storage automatically for you, as you might expect this is not the case for a self-hosted cluster.
+
+Therefore we will need to prepare some storage or persistent volume. To simplify this we can leverage the OpenEBS storage solution, which can automatically provision PV (Persistent volumes) for us.
+
+Let us start with installing the OpenEBS operator. Please note that you might need to change the mount folder. Download the `openebs-operator.yaml`.
+
+    wget https://openebs.github.io/charts/openebs-operator.yaml
+
+ Scroll to the bottom, until you hit the `StorageClass` section. Modify the `BasePath` value to the destination (external mount) you prefer.
+
+    #Specify the location (directory) where
+    # where PV(volume) data will be saved.
+    # A sub-directory with pv-name will be
+    # created. When the volume is deleted,
+    # the PV sub-directory will be deleted.
+    #Default value is /var/openebs/local
+    - name: BasePath
+      value: "/var/openebs/local/"
+  
+Once you are ok with the `BasePath` go ahead and apply the operator.
+
+    kubectl apply -f openebs-operator.yaml
+
+Once done it should start installing several resources in the `openebs` namespace. If all resources are created successfully we can launch the `helm install` for MongoDB.
