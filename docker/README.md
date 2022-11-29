@@ -1,6 +1,6 @@
 # Kerberos Vault in Docker
 
-Kerberos Vault can also be installed without a Kubernetes cluster, by leveraging plain Docker containers or `docker compose`. In this example we'll show how to setup Kerberos Vault and it's required service MongoDB. We'll use a local Minio container, but you could leverage other local storage (Ceph) or cloud storage (Minio, Storj, Google Cloud Storage, S3).
+Kerberos Vault can also be installed without [a Kubernetes cluster](../kubernetes/), by leveraging plain Docker containers or `docker compose`. In this example we'll show how to setup Kerberos Vault and it's required service MongoDB. We'll use a local Minio container, but you could leverage other local storage (Ceph) or cloud storage (Minio, Storj, Google Cloud Storage, S3).
 
 There are still some tweaks and works to do (see below), to make this setup more secure and polished.
 
