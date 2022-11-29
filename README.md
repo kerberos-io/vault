@@ -17,9 +17,9 @@
 3. [Integrations and extensions](#integrations-and-extensions)
    
 ### Introductions
-1. [Kerberos Vault](#kerberos-vault-1)
-2. [Kerberos Hub](#kerberos-hub)
-3. [Mission](#mission)
+4. [Kerberos Vault](#kerberos-vault-1)
+5. [Kerberos Hub](#kerberos-hub)
+6. [Mission](#mission)
    
 ## Installation
 
