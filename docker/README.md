@@ -9,6 +9,8 @@ There are still some tweaks and works to do (see below), to make this setup more
 
 ## :books: Overview
 
+### Installation
+
 1. [Prerequisites](#prerequisites)
 2. [Setup networking](#setup-networking)
 3. [Create host volumes](#create-host-volumes)
@@ -23,6 +25,10 @@ There are still some tweaks and works to do (see below), to make this setup more
 9. [Add a storage provider](#add-a-storage-provider)
 10.  [Add an account](#add-an-account)
 11.  [You're done!](#youre-done)
+
+# Installation
+
+We'll start with installing Kerberos Vault on your machine, VM or whatever hardware that can run the `docker` runtime. Once install, we'll go into a quick configuration course to connect your Kerberos Vault to a storage provider.
 
 ## Prerequisites
 
