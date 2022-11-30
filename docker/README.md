@@ -68,6 +68,10 @@ Now we are ready to start the `docker compose` configuration. While creating we 
 - Minio: The local object storage we are setting up.
 - MongoDB: Kerberos Vault will store some metadata in a MongoDB instance.
 
+Download the `docker-compose.yaml` file and store it on the machine.
+
+    wget https://raw.githubusercontent.com/kerberos-io/vault/master/docker/docker-compose.yml -O docker-compose.yaml
+
 Create the services using the `create` command.
 
     docker compose create
