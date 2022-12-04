@@ -426,7 +426,7 @@ Next to Kerberos Vault, additional deployments/sidecars can be installed to full
 
 ### Recycling rules
 
-Different recycling rules can be defined. A rule determines when and how recordings should be removed.
+Different recycling rules can be defined. A rule determines when and how recordings should be removed. For more information of how recycling works, [read the documentation](https://doc.kerberos.io/vault/recycle/).
 
 #### Prerequisites
 
