@@ -42,8 +42,6 @@ This installation guide will slight modify depending on if you are self-hosting 
 
 ### Optional steps
 1. [Recycling rules](#recycling-rules)
-   A. [Prerequisites](#prerequisites-2)
-   B. [Installation](#installation)
 
 ## A. Managed Kubernetes
 
