@@ -41,6 +41,15 @@ If you consider a production proof and ready environment, `Kubernetes` will prov
 
 A couple of [integrations and extensions can be found in the `examples` folder](examples). These examples illustrates how the Kerberos Vault API is working, and how it can be used to develop custom algorithms or applications.
 
+
+## Indexing
+
+Following indexes should be executed on the MongoDB database (KerberosStorage) to improve future performance.
+
+### Media collection
+
+    db.getCollection("media").createIndex({timestamp:-1})
+    
 ## Introductions
 
 Please note that we have added a brief introduction to Kerberos Vault and Kerberos Hub below. To get a complete overview [visit the documentation page](https://doc.kerberos.io), where you will be able to learn about all the ins and outs of the Kerberos.io ecosystem.
