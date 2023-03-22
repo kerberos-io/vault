@@ -48,6 +48,9 @@ spec:
           value: ""
         - name : MQTT_PASSWORD
           value: ""
+        # If you have a chained vault setup, enable this.
+        - name: CONTINUOUS_FORWARDING
+          value: "false"
         # By default the API will be served on api.vaultdomain.com (api.) is prefixed.
         # If you prefer another hostname for the API e.g. myvaultapi-vaultdomain.com
         # Enable and change this variable to "myvaultapi-vaultdomain.com"
