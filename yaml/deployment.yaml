@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kerberos-vault
-        image: kerberos/vault:1.0.797789961
+        image: kerberos/vault:1.0.815780463
         #imagePullPolicy: Always
         resources:
           limits:
