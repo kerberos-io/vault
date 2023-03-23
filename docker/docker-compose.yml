@@ -19,7 +19,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   kerberos-vault:
-    image: 'kerberos/vault:1.0.759002098'
+    image: 'kerberos/vault:1.0.815780463'
     restart: always
     container_name: 'kerberos-vault'
     hostname: 'kerberos-vault'
@@ -38,6 +38,7 @@ services:
       - MONGODB_USERNAME=root
       - MONGODB_PASSWORD=pass
       - MONGODB_DATABASE_STORAGE=KerberosStorage
+      - CONTINUOUS_FORWARDING=false
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
