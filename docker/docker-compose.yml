@@ -19,7 +19,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   kerberos-vault:
-    image: 'kerberos/vault:1.0.815780463'
+    image: 'kerberos/vault:1.0.817949156'
     restart: always
     container_name: 'kerberos-vault'
     hostname: 'kerberos-vault'
