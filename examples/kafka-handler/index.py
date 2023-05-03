@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 
 # Kafka settings
-Uri = os.getenv("STORAGE_URI", "https://api.storage.kerberos.io")
+Uri = os.getenv("STORAGE_URI", "https://vault.kerberos.io/api")
 AccessKey = os.getenv("STORAGE_ACCESS_KEY", "xx")
 SecretAccessKey = os.getenv("STORAGE_SECRET", "xx")
 

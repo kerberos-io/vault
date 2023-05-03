@@ -42,7 +42,7 @@ while True:
             provider = message['source']
 
             response = requests.get(
-                'https://api.storage.kerberos.io/storage/blob',
+                'https://vault.kerberos.io/api/storage/blob',
                 headers={
                     'X-Kerberos-Storage-FileName': fileName,
                     'X-Kerberos-Storage-Provider': provider,

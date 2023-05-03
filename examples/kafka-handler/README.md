@@ -1,6 +1,6 @@
 # Kerberos Vault - A Kafka handler
 
-An example of how to connect a Kafka broker to Kerberos Vault which produces messages everytime a recording was stored. Afterwards a Kafka handler is used to consume those messages and execute custom logic. 
+An example of how to connect a Kafka broker to Kerberos Vault which produces messages everytime a recording was stored. Afterwards a Kafka handler is used to consume those messages and execute custom logic.
 
 ## How to run
 
@@ -125,7 +125,6 @@ Add following code to a `mqueue.py` file.
             self.kafka_consumer.close()
             return True
 
-
 When running this code `python3 index.py`, it will continously read from the specified Kafka topic. Each time a recording is uploaded to Kerberos Vault, an event will be generated within a few milliseconds. For example:
 
     next..
@@ -155,11 +154,11 @@ Open your browser and go to `http(s)://api.your-kerberos-vault-domain.com/swagge
 
 ![Kerberos Vault Swagger](images/vault-swagger.gif)
 
-Scroll down until you see the storage section, and find the `/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Vault provider (AWS, GCP, Azure, or Minio).
+Scroll down until you see the storage section, and find the `/api/storage/blob` endpoint. This endpoint allows you to retrieve the binary file (recording) from your defined Kerberos Vault provider (AWS, GCP, Azure, or Minio).
 
 ![Kerberos Vault Swagger API](images/kerberos-storage-swagger-storage.png)
 
-When opening the `/storage/blob` endpoint, you will see all the required fields to be send to the API, to retrieve the file from Kerberos Vault. As you can see a couple of headers needs to be send to the API:
+When opening the `/api/storage/blob` endpoint, you will see all the required fields to be send to the API, to retrieve the file from Kerberos Vault. As you can see a couple of headers needs to be send to the API:
 
 - X-Kerberos-Storage-FileName: this is the filename we retrieved from the Kafka message.
 - X-Kerberos-Storage-Provider: the provider which was used to store the file on.
@@ -194,7 +193,7 @@ Within the message retrieval loop add the necessary HTTP Get request, with the a
     provider = message['source']
 
     response = requests.get(
-      'http(s)://api.yourkerberostoragedomain.com/storage/blob',
+      'http(s)://yourkerberostoragedomain.com/api/storage/blob',
       headers={
         'X-Kerberos-Storage-FileName': fileName,
         'X-Kerberos-Storage-Provider': provider,
@@ -224,13 +223,12 @@ Let's go ahead and calculate the histogram of the video, using the `KMeans` func
 
     import cv2
 
-Create a video capture, pass in the filename `video.mp4` and  read the first frame.
+Create a video capture, pass in the filename `video.mp4` and read the first frame.
 
     vidcap = cv2.VideoCapture('video.mp4')
     success,img = vidcap.read()
 
 Now we can retrieve the individual frames, let's add following function to you `index.py` file. This function `calculateHistogram` will calculate a color histogram of the frame you've provided to the function.
-
 
     def calculateHistogram(img):
 
