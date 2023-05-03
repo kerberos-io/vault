@@ -42,10 +42,6 @@ This installation guide will slight modify depending on if you are self-hosting 
 9. [OpenEBS](#openebs)
 10. [Proceed with managed Kubernetes](#proceed-with-managed-kubernetes)
 
-### Optional steps
-
-1. [Recycling rules](#recycling-rules)
-
 ## A. Managed Kubernetes
 
 To simplify the installation we will start with the most common setup, where we will install Kerberos Vault on a managed Kubernetes services.
@@ -431,5 +427,3 @@ Once done it should start installing several resources in the `openebs` namespac
 ### Proceed with managed Kubernetes
 
 Now you're done with installing the self-hosted prerequisites, you should be able to proceed with the [A. Managed Kubernetes](#a-managed-kubernetes) section. This will install all the remaining resources.
-
-Next to persisting your recordings, recycling up is evenly important. Recycling avoids your disks being filled up with recordings and locking up the entire OS and cluster, and also important helps you to reduce costs. Recycling is managed through a recycle service called Kerberos Vault Recycle, which you can use to remove recordings based on different rules.
