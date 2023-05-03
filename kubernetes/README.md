@@ -15,6 +15,7 @@ This installation guide will slight modify depending on if you are self-hosting 
 ## :books: Overview
 
 ### A. Managed Kubernetes
+
 1. [Prerequisites](#prerequisites)
 2. [Introduction](#introduction)
 3. [Kerberos Vault](#kerberos-vault)
@@ -29,6 +30,7 @@ This installation guide will slight modify depending on if you are self-hosting 
 12. [Access the system](#access-the-system)
 
 ### B. Self-hosted Kubernetes
+
 1. [Prerequisites](#prerequisites-1)
 2. [Docker](#docker)
 3. [Kubernetes](#kubernetes)
@@ -41,6 +43,7 @@ This installation guide will slight modify depending on if you are self-hosting 
 10. [Proceed with managed Kubernetes](#proceed-with-managed-kubernetes)
 
 ### Optional steps
+
 1. [Recycling rules](#recycling-rules)
 
 ## A. Managed Kubernetes
@@ -104,36 +107,6 @@ Use one of the preferred OS package managers to install the Helm client:
 
     gofish install helm
 
-### Traefik
-
-[**Traefik**](https://containo.us/traefik/) is a reverse proxy and load balancer which allows you to expose your deployments more easily. Kerberos uses Traefik to expose its APIs more easily.
-
-Add the Helm repository and install traefik.
-
-    kubectl create namespace traefik
-    helm repo add traefik https://helm.traefik.io/traefik
-    helm install traefik traefik/traefik -n traefik 
-
-After installation, you should have an IP attached to Traefik service, look for it by executing the `get service` command. You will see the ip address in the `EXTERNAL-IP` attribute.
-
-    kubectl get svc
-
-        NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-        kubernetes                  ClusterIP      10.0.0.1       <none>          443/TCP                      36h
-    --> traefik                     LoadBalancer   10.0.27.93     40.114.168.96   443:31623/TCP,80:31804/TCP   35h
-        traefik-dashboard           NodePort       10.0.252.6     <none>          80:31146/TCP                 35h
-
-Go to your DNS provider and link the domain you've configured in the first step `traefik.domain.com` to the IP address of thT `EXTERNAL-IP` attribute. When browsing to `traefik.domain.com`, you should see the traefik dashboard showing up.
-
-### Ingress-Nginx (alternative for Traefik)
-
-If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
-
-    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-    helm repo update
-    kubectl create namespace ingress-nginx
-    helm install ingress-nginx -n ingress-nginx ingress-nginx/ingress-nginx
-
 ### MongoDB
 
 When using Kerberos Vault, it will persist references to the recordings stored in your storage provider in a MongoDB database. As used before, we are using `helm` to install MongoDB in our Kubernetes cluster.
@@ -169,7 +142,24 @@ Create the config map.
 
 ### Deployment
 
-Before installing Kerberos Vault, open the `./kerberos-vault/deployment.yaml` configuration file. At the of the bottom file you will find two endpoints, similar to the Ingres file below. Update the hostnames to your own preferred domain, and add these to your DNS server or `/etc/hosts` file (pointing to the same IP as the Traefik/Ingress-nginx EXTERNAL-IP).
+To install the Kerberos Vault web app inside your cluster, simply execute below `kubectl` command. This will create the deployment for us with the necessary configurations, and exposed it on internal/external IP address, thanks to our `LoadBalancer` MetalLB or cloud provider.
+
+    kubectl apply -f ./kerberos-vault/deployment.yaml -n kerberos-vault
+
+Verify that the Kerberos Vault got assigned an internal IP address.
+
+    kubectl get svc -n kerberos-vault
+
+You should see the service `vault-lb` being created, together with and IP address assigned from the MetalLB pool or cloud provider.
+
+        NAME                               TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)        AGE
+    --> vault-lb                         LoadBalancer   10.107.209.226   192.168.1.81   80:30636/TCP   24m
+
+### (Optional) Ingress
+
+By default Kerberos Vault deployment will use and create a `LoadBalancer`. This means that Kerberos Vault will be granted an internal/external IP from which you can navigate to and consume the Kerberos Vault UI. However if you wish to use the `Ingress` functionality by assigning a readable DNS name, you'll need to modify a few things.
+
+First make sure to install either Traefik or Ingress-nginx, following sections below. Once you have chosen an `Ingress`, open the `./kerberos-vault/ingress.yaml` configuration file. At the of the bottom file you will find an endpoint, similar to the `Ingress` file below. Update the hostname to your own preferred domain, and add these to your DNS server or `/etc/hosts` file (pointing to the same IP address as the Traefik/Ingress-nginx IP address).
 
         spec:
           rules:
@@ -178,29 +168,55 @@ Before installing Kerberos Vault, open the `./kerberos-vault/deployment.yaml` co
               paths:
               - path: /
                 backend:
-                  serviceName: kerberos-vault
+                  serviceName: vault
                   servicePort: 80
-    -->   - host: api.vault.domain.com
-            http:
-              paths:
-              - path: /
-                backend:
-                  serviceName: kerberos-vault
-                  servicePort: 8081
 
 If you are using Ingress Nginx, do not forgot to comment `Traefik` and uncomment `Ingress Nginx`.
 
     apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
-      name: factory
+      name: vault
       annotations:
         #kubernetes.io/ingress.class: traefik
         kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
-Once you have corrected the DNS names (or internal /etc/hosts file), install the Kerberos Factory web app inside your cluster.
+Once done, apply the `Ingress` file.
 
-    kubectl apply -f ./kerberos-vault/deployment.yaml -n kerberos-vault
+    kubectl apply -f ./kerberos-vault/ingress.yaml -n kerberos-vault
+
+#### (Option 1) Traefik
+
+[**Traefik**](https://containo.us/traefik/) is a reverse proxy and load balancer which allows you to expose your deployments more easily. Kerberos uses Traefik to expose its APIs more easily.
+
+Add the Helm repository and install traefik.
+
+    kubectl create namespace traefik
+    helm repo add traefik https://helm.traefik.io/traefik
+    helm install traefik traefik/traefik -n traefik
+
+After installation, you should have an IP attached to Traefik service, look for it by executing the `get service` command. You will see the ip address in the `EXTERNAL-IP` attribute.
+
+    kubectl get svc
+
+        NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+        kubernetes                  ClusterIP      10.0.0.1       <none>          443/TCP                      36h
+    --> traefik                     LoadBalancer   10.0.27.93     40.114.168.96   443:31623/TCP,80:31804/TCP   35h
+        traefik-dashboard           NodePort       10.0.252.6     <none>          80:31146/TCP                 35h
+
+Go to your DNS provider and link the domain you've configured in the first step `traefik.domain.com` to the IP address of thT `EXTERNAL-IP` attribute. When browsing to `traefik.domain.com`, you should see the traefik dashboard showing up.
+
+#### (Option 2) Ingress-Nginx (alternative for Traefik)
+
+If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
+
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo update
+    kubectl create namespace ingress-nginx
+    helm install ingress-nginx -n ingress-nginx ingress-nginx/ingress-nginx
 
 ### Test out configuration
 
@@ -226,16 +242,15 @@ It should look like this.
 
 ### Access the system
 
-Once everything is configured correctly your cluster and DNS or `/etc/hosts` file, you should be able to access the Kerberos Vault application. By navigating to the domain `vault.domain.com` in your browser you will see the Kerberos Vault login page showing up.
+Once everything is configured correctly, you should be able to access the Kerberos Vault application. By navigating to the internal/external IP address (`LoadBalancer`) or domain (`Ingress`) with your browser you will see the Kerberos Vault login page showing up.
 
 ![Once successfully installed Kerberos Vault, it will show you the login page.](assets/login.gif)
-
 
 ## B. Self-hosted Kubernetes
 
 You might have the requirement to self-host your Kubernetes cluster due to various good reasons. In this case the installation of Kerberos Vault will be slightly "more" difficult, in the sense that specific resources are not available by default; compared to the managed Kubernetes installation.
 
-The good things is that installation of a self-hosted Kubernetes cluster, contains the same steps as a managed Kubernetes installation with a few extra resources on top. 
+The good things is that installation of a self-hosted Kubernetes cluster, contains the same steps as a managed Kubernetes installation with a few extra resources on top.
 
 ### Prerequisites
 
@@ -262,7 +277,7 @@ Once installed modify the `cgroup driver`, so kubernetes will be using it correc
       "storage-driver": "overlay2"
     }
     EOF
-    
+
     sudo systemctl enable docker
     sudo systemctl daemon-reload
     sudo systemctl restart docker
@@ -285,7 +300,7 @@ And if you want to make it permanent after every boot.
 
     sudo sed -i.bak '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-***Special note***: If you already had Kubernetes installed, make sure you are running latest version and/or have properly cleaned up previous installation.
+**_Special note_**: If you already had Kubernetes installed, make sure you are running latest version and/or have properly cleaned up previous installation.
 
     kubeadm reset
     rm -rf $HOME/.kube
@@ -396,7 +411,7 @@ Let us start with installing the OpenEBS operator. Please note that you might ne
 
     wget https://openebs.github.io/charts/openebs-operator.yaml
 
- Scroll to the bottom, until you hit the `StorageClass` section. Modify the `BasePath` value to the destination (external mount) you prefer.
+Scroll to the bottom, until you hit the `StorageClass` section. Modify the `BasePath` value to the destination (external mount) you prefer.
 
     #Specify the location (directory) where
     # where PV(volume) data will be saved.
@@ -406,7 +421,7 @@ Let us start with installing the OpenEBS operator. Please note that you might ne
     #Default value is /var/openebs/local
     - name: BasePath
       value: "/var/openebs/local/"
-  
+
 Once you are ok with the `BasePath` go ahead and apply the operator.
 
     kubectl apply -f openebs-operator.yaml
@@ -417,24 +432,4 @@ Once done it should start installing several resources in the `openebs` namespac
 
 Now you're done with installing the self-hosted prerequisites, you should be able to proceed with the [A. Managed Kubernetes](#a-managed-kubernetes) section. This will install all the remaining resources.
 
-
 Next to persisting your recordings, recycling up is evenly important. Recycling avoids your disks being filled up with recordings and locking up the entire OS and cluster, and also important helps you to reduce costs. Recycling is managed through a recycle service called Kerberos Vault Recycle, which you can use to remove recordings based on different rules.
-
-## Optional steps
-
-Next to Kerberos Vault, additional deployments/sidecars can be installed to fullfil a specific task.
-
-### Recycling rules
-
-Different recycling rules can be defined. A rule determines when and how recordings should be removed. For more information of how recycling works, [read the documentation](https://doc.kerberos.io/vault/recycle/).
-
-#### Prerequisites
-
-This installation guide assumes you have set up Kerberos Vault properly.
-
-#### Installation
-
-Create the recycle deployment as following.
-
-    git clone https://github.com/kerberos-io/vault && cd vault/kubernetes
-    kubectl apply -f ./kerberos-vault/deployment-cleanup.yaml -n kerberos-vault

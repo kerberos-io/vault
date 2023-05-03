@@ -1,9 +1,0 @@
-apiVersion: v1
-data:
-  accessKey: "YWJj"
-  secretKey: "MTIz"
-kind: Secret
-metadata:
-  name: minio-creds-secret
-  namespace: minio-tenant
-type: Opaque

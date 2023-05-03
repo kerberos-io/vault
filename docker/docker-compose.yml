@@ -14,23 +14,20 @@ services:
       - "--entrypoints.websecure.address=:443"
     ports:
       - "80:80"
-      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   kerberos-vault:
-    image: 'kerberos/vault:1.0.817949156'
+    image: 'kerberos/vault:1.0.856111762'
     restart: always
     container_name: 'kerberos-vault'
     hostname: 'kerberos-vault'
     ports:
       - '80'
-      - '8081'
     volumes:
       - "./vault:/vault"
     environment:
       - GIN_MODE=release
-      - STORAGE_API_URL=kerberos-vault-api.domain.tld
       - KERBEROS_LOGIN_USERNAME=root
       - KERBEROS_LOGIN_PASSWORD=pass
       - MONGODB_HOST=kerberos-mongo
@@ -47,12 +44,6 @@ services:
       - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
       - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
       - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
-      - 'traefik.http.routers.kerberos-vault-api.rule=Host(`kerberos-vault-api.domain.tld`)'
-      - 'traefik.http.routers.kerberos-vault-api.entrypoints=web'
-      - 'traefik.http.routers.kerberos-vault-api.tls=false'
-      - 'traefik.http.routers.kerberos-vault-api.tls.certresolver=leresolver'
-      - "traefik.http.routers.kerberos-vault-api.service=kerberos_vault_api"
-      - 'traefik.http.services.kerberos_vault_api.loadbalancer.server.port=8081'
 
   kerberos-mongo:
     image: 'mongo:4.4.16'
