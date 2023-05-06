@@ -32,9 +32,7 @@ The purpose of this exercise will cover following steps:
 4. Fetch related recording from Kerberos Vault API.
 5. Execute a color histogram algorithm.
 
-By doing this exercise you have to make sure you have a running kubernetes (k8s) cluster and properly setup [Kerberos Enterprise](https://doc.kerberos.io/enterprise/installation) and [Kerberos Vault](https://doc.kerberos.io/vault/installation).
-
-After installation make sure you have connected on or more cameras to Kerberos Enterprise and have one or more providers (Azure, AWS, GCP or Minio) connected to Kerberos Vault.
+To run this exercise make sure you have properly setup [Kerberos Factory](https://doc.kerberos.io/factory/first-things-first/) or a [Kerberos Agent](https://doc.kerberos.io/agent/first-things-first/). Once done install [Kerberos Vault](https://doc.kerberos.io/vault/installation), and connect your Kerberos Agents and/or Kerberos Factory to store recordings in your Kerberos Vault using the storage provider you prefer (Azure, AWS, GCP, Minio or other S3 compliant storage).
 
 Ok, let's go!
 
