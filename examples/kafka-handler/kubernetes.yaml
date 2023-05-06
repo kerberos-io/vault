@@ -25,7 +25,7 @@ spec:
           env:
             # Kerberos Vault
             - name: STORAGE_URI
-              value: "https://staging.api.vault.kerberos.xxx"
+              value: "https://vault.kerberos.xxx/api"
             - name: STORAGE_ACCESS_KEY
               value: "xxx"
             - name: STORAGE_SECRET
