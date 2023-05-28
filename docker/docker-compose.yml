@@ -2,53 +2,25 @@ version: '3'
 
 services:
 
-  traefik:
-    image: "traefik:v2.9"
-    container_name: "traefik"
-    command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-    ports:
-      - "80:80"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #traefik:
+  #  image: "traefik:v2.9"
+  #  container_name: "traefik"
+  #  command:
+  #    - "--log.level=DEBUG"
+  #    - "--api.insecure=true"
+  #    - "--providers.docker=true"
+  #    - "--providers.docker.exposedbydefault=false"
+  #    - "--entrypoints.web.address=:80"
+  #    - "--entrypoints.websecure.address=:443"
+  #  ports:
+  #    - "80:80"
+  #  volumes:
+  #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-  kerberos-vault:
-    image: 'kerberos/vault:1.0.871485739'
-    restart: always
-    container_name: 'kerberos-vault'
-    hostname: 'kerberos-vault'
-    ports:
-      - '80'
-    volumes:
-      - "./vault:/vault"
-    environment:
-      - GIN_MODE=release
-      - KERBEROS_LOGIN_USERNAME=root
-      - KERBEROS_LOGIN_PASSWORD=pass
-      - MONGODB_HOST=kerberos-mongo
-      - MONGODB_DATABASE_CREDENTIALS=admin
-      - MONGODB_USERNAME=root
-      - MONGODB_PASSWORD=pass
-      - MONGODB_DATABASE_STORAGE=KerberosStorage
-      - CONTINUOUS_FORWARDING=false
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
-      - 'traefik.http.routers.kerberos-vault.entrypoints=web'
-      - 'traefik.http.routers.kerberos-vault.tls=false'
-      - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
-      - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
-      - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
-
-  kerberos-mongo:
+  mongo:
     image: 'mongo:4.4.16'
-    container_name: 'kerberos-mongo'
-    hostname: 'kerberos-mongo'
+    container_name: 'mongo'
+    hostname: 'mongo'
     ports:
       - 27017
     volumes:
@@ -56,6 +28,12 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   minio:
     image: 'quay.io/minio/minio'
@@ -63,8 +41,8 @@ services:
     hostname: 'minio'
     command: server /data --console-address ":9090"
     ports:
-      - 9000
-      - 9090
+      - 9000:9000
+      - 9090:9090
     volumes:
       - ./minio:/data
     environment:
@@ -72,26 +50,57 @@ services:
       - MINIO_ROOT_PASSWORD=CHANGEME123
       - MINIO_DOMAIN=domain.tld
       - MINIO_DOMAINS=domain.tld
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.minio.rule=Host(`minio.domain.tld`)'
-      - 'traefik.http.routers.minio.entrypoints=web'
-      - 'traefik.http.routers.minio.tls=false'
-      - 'traefik.http.routers.minio.tls.certresolver=leresolver'
-      - "traefik.http.routers.minio.service=minio"
-      - 'traefik.http.services.minio.loadbalancer.server.port=9000'
-      - 'traefik.http.routers.minio-console.rule=Host(`minio-console.domain.tld`)'
-      - 'traefik.http.routers.minio-console.entrypoints=web'
-      - 'traefik.http.routers.minio-console.tls=false'
-      - 'traefik.http.routers.minio-console.tls.certresolver=leresolver'
-      - "traefik.http.routers.minio-console.service=minio-console"
-      - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
-    
+    #labels:
+    #  - 'traefik.enable=true'
+    #  - 'traefik.http.routers.minio.rule=Host(`minio.domain.tld`)'
+    #  - 'traefik.http.routers.minio.entrypoints=web'
+    #  - 'traefik.http.routers.minio.tls=false'
+    #  - 'traefik.http.routers.minio.tls.certresolver=leresolver'
+    #  - "traefik.http.routers.minio.service=minio"
+    #  - 'traefik.http.services.minio.loadbalancer.server.port=9000'
+    #  - 'traefik.http.routers.minio-console.rule=Host(`minio-console.domain.tld`)'
+    #  - 'traefik.http.routers.minio-console.entrypoints=web'
+    #  - 'traefik.http.routers.minio-console.tls=false'
+    #  - 'traefik.http.routers.minio-console.tls.certresolver=leresolver'
+    #  - "traefik.http.routers.minio-console.service=minio-console"
+    #  - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
+
+  vault:
+    image: 'kerberos/vault:1.0.871485739'
+    restart: always
+    container_name: 'kerberos-vault'
+    hostname: 'kerberos-vault'
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - '80:80'
+    volumes:
+      - "./vault:/vault"
+    environment:
+      - GIN_MODE=release
+      - KERBEROS_LOGIN_USERNAME=root
+      - KERBEROS_LOGIN_PASSWORD=pass
+      - MONGODB_HOST=mongo
+      - MONGODB_DATABASE_CREDENTIALS=admin
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=pass
+      - MONGODB_DATABASE_STORAGE=KerberosStorage
+      - CONTINUOUS_FORWARDING=false
+    #labels:
+    #  - 'traefik.enable=true'
+    #  - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
+    #  - 'traefik.http.routers.kerberos-vault.entrypoints=web'
+    #  - 'traefik.http.routers.kerberos-vault.tls=false'
+    #  - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
+    #  - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
+    #  - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
 
 volumes:
   kerberos-data:
 
+
 networks:
   default:
-      name: cluster-net
-      external: true
+    name: cluster-net
+    external: true
