@@ -334,13 +334,13 @@ Now we have a Kubernetes cluster, we need to make sure we add make it available 
 
 By default, and in this example, we only have one node our master node. In a production scenario we would have additional worker nodes. By default the master nodes are marked as `tainted`, this means they cannot run workloads. To allow master nodes to run workloads, we need to untaint them. If we wouldn't do this our pods would never be scheduled, as we do not have worker nodes at this moment.
 
-    kubectl taint nodes --all node-role.kubernetes.io/master-
+    kubectl taint nodes <your_node_name> node-role.kubernetes.io/control-plane-
 
 ### Calico
 
 Calico is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. (https://www.projectcalico.org/). We will use it as our network layer in our Kubernetes cluster. You could use otthers like Flannel aswell, but we prefer Calico.
 
-    curl https://docs.projectcalico.org/manifests/calico.yaml -O
+    curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml -O
     kubectl apply -f calico.yaml
 
 ### Introduction
