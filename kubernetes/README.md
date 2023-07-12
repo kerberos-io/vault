@@ -286,7 +286,7 @@ After Docker being installed go ahead and install the different Kubernetes servi
     apt install apt-transport-https curl -y
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
     apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-    apt update -y && apt install kubeadm kubelet kubectl kubernetes-cni -y
+    apt update -y && apt install kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00 -y
 
 Make sure you disable swap, this is required by Kubernetes.
 
