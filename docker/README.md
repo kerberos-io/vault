@@ -80,11 +80,16 @@ One created you can activate the services with the `up` command.
 
     docker compose up
 
-## Modify host files
+## (Optional) Modify host files
 
-Now add some records to your `/etc/hosts` file, so you can reach the Kerberos Vault instance (and API) and Minio console, through your predefined DNS name.
+By default ports are opened on the host system, if you enabled Ingress (Traefik) you might use DNS names. Now add some records to your `/etc/hosts` file, so you can reach the Kerberos Vault instance (and API) and Minio console, through your predefined DNS name.
 
-    178.xxx.xxx.41 kerberos-vault-api.domain.tld kerberos-vault.domain.tld minio-console.domain.tld 
+    x.x.x.x kerberos-vault-api.domain.tld kerberos-vault.domain.tld minio-console.domain.tld 
+
+or using the ports you might reach the following endpoints:
+
+- Minio: `http://localhost:9090`
+- Kerberos Vault: `http://localhost:80`
 
 # Let's configure it!
 
@@ -92,7 +97,7 @@ Now the services are up and running, you should be able to access both the Kerbe
 
 ## Open Minio Console
 
-Open your favourite browser, and open the Minio Console - `http://minio-console.domain.tld `. You should see the Minio console showing up; depending on your version this might look different.
+Open your favourite browser, and open the Minio Console - `http://localhost:9090` or if Traefik enabled: `http://minio-console.domain.tld `. You should see the Minio console showing up; depending on your version this might look different.
 
 ![Minio console](assets/minio-console.png)
 
