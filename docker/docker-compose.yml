@@ -86,6 +86,7 @@ services:
       - MONGODB_USERNAME=root
       - MONGODB_PASSWORD=pass
       - MONGODB_DATABASE_STORAGE=KerberosStorage
+      - MQTTURI=
       - CONTINUOUS_FORWARDING=false
     #labels:
     #  - 'traefik.enable=true'
