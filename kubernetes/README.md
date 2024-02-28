@@ -21,13 +21,12 @@ This installation guide will slight modify depending on if you are self-hosting 
 3. [Kerberos Vault](#kerberos-vault)
 4. [Namespace](#namespace)
 5. [Helm](#helm)
-6. [Traefik](#traefik)
-7. [Ingress-Nginx (alternative for Traefik)](#ingress-nginx-alternative-for-traefik)
-8. [MongoDB](#mongodb)
-9. [Config Map](#config-map)
-10. [Deployment](#deployment)
-11. [Test out configuration](#test-out-configuration)
-12. [Access the system](#access-the-system)
+6. [Ingress](#optional-ingress)
+7. [MongoDB](#mongodb)
+8. [Config Map](#config-map)
+9. [Deployment](#deployment)
+10. [Test out configuration](#test-out-configuration)
+11. [Access the system](#access-the-system)
 
 ### B. Self-hosted Kubernetes
 
@@ -105,9 +104,11 @@ Use one of the preferred OS package managers to install the Helm client:
 
 ### MongoDB
 
-When using Kerberos Vault, it will persist references to the recordings stored in your storage provider in a MongoDB database. As used before, we are using `helm` to install MongoDB in our Kubernetes cluster.
+When using Kerberos Vault, it will persist references to the recordings stored in your storage provider in a MongoDB database. As used before, we are using `helm` to install MongoDB in our Kubernetes cluster. Within the Kerberos Vault project we are using the latest official mongodb driver, so we support all major MongoDB versions (4.x, 5.x, 6.x, 7.x).
 
-Have a look into the `./mongodb/values.yaml` file, you will find plenty of configurations for the MongoDB helm chart. To change the username and password of the MongoDB instance, go ahead and [find the attribute where](https://github.com/kerberos-io/vault/blob/master/kubernetes/mongodb/values.yaml#L148) you can change the root password.
+Have a look into the `./mongodb/values.yaml` file, you will find plenty of configurations for the MongoDB helm chart. To change the username and password of the MongoDB instance, go ahead and [find the attribute where](https://github.com/kerberos-io/vault/blob/master/kubernetes/mongodb/values.yaml#L148) you can change the root password. Please note that we are using the official [Bitnami Mongodb helm chart](https://github.com/bitnami/charts/tree/main/bitnami/mongodb), so please use their repository for more indepth configuration.
+
+Next to that you might also consider a SaaS MongoDB deployment using MongoDB Atlas or using a managed cloud like AWS, GCP, Azure or Alibaba cloud. A managed service takes away a lot of management and maintenance from your side (backups, security, sharing, etc). If you do want to install MongoDB in your own cluster then please continue with this tutorial.
 
     helm repo add bitnami https://charts.bitnami.com/bitnami
     kubectl create namespace mongodb
@@ -123,9 +124,16 @@ Once installed successfully, we should verify if the password has been set corre
 
 ### Config Map
 
-Kerberos Vault requires a configuration to connect to the MongoDB instance. To handle this `configmap` map is created in the `./mongodb/mongodb.config.yaml` file.
+Kerberos Vault requires a configuration to connect to the MongoDB instance. To handle this `configmap` map is created in the `./mongodb/mongodb.config.yaml` file. However you might also use the environment variables within the `./kerberos-vault/deployment.yaml` file to configure the mongodb connection.
 
-Modify the MongoDB credentials in the `./mongodb/mongodb.config.yaml`, and make sure they match the credentials of your MongoDB instance, as described above.
+Modify the MongoDB credentials in the `./mongodb/mongodb.config.yaml`, and make sure they match the credentials of your MongoDB instance, as described above. There are two ways of configuring the mongodb connection, either you provide a `MONGODB_URI` or you specify the individual variables `MONGODB_USERNAME`, `MONGODB_PASSWORD`, etc.
+
+As mentioned above a managed MongoDB is easier to setup and manage, for example for MongoDB Atlas, you will get a MongoDB URI in the form of `"mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"`. By applying this value into the `MONGODB_URI` field, you will have setup your MongoDB connection successfully.
+
+        - name: MONGODB_URI
+          value: "mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+
+Once you applied this value, the other values like `MONGODB_USERNAME`, `MONGODB_PASSWORD` and others will be ignored. If you don't like the `MONGODB_URI` format you can still use the old way of defining the MongoDB connection by providing the different values.
 
         - name: MONGODB_USERNAME
           value: "root"
@@ -155,7 +163,7 @@ You should see the service `vault-lb` being created, together with and IP addres
 
 By default Kerberos Vault deployment will use and create a `LoadBalancer`. This means that Kerberos Vault will be granted an internal/external IP from which you can navigate to and consume the Kerberos Vault UI. However if you wish to use the `Ingress` functionality by assigning a readable DNS name, you'll need to modify a few things.
 
-First make sure to install either Traefik or Ingress-nginx, following sections below. Once you have chosen an `Ingress`, open the `./kerberos-vault/ingress.yaml` configuration file. At the of the bottom file you will find an endpoint, similar to the `Ingress` file below. Update the hostname to your own preferred domain, and add these to your DNS server or `/etc/hosts` file (pointing to the same IP address as the Traefik/Ingress-nginx IP address).
+First make sure to install either Traefik or Ingress-nginx, following sections below. Once you have chosen an `Ingress`, open the `./kerberos-vault/ingress.yaml` configuration file. At the of the bottom file you will find an endpoint, similar to the `Ingress` file below. Update the hostname to your own preferred domain, and add these to your DNS server or `/etc/hosts` file (pointing to the same IP address as the `ingress-nginx` IP address).
 
         spec:
           rules:
@@ -167,14 +175,13 @@ First make sure to install either Traefik or Ingress-nginx, following sections b
                   serviceName: vault
                   servicePort: 80
 
-If you are using Ingress Nginx, do not forgot to comment `Traefik` and uncomment `Ingress Nginx`.
+Looking into the `./kerberos-vault/ingress.yaml` file, you will see that an nginx ingress will be created.
 
     apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
       name: vault
       annotations:
-        #kubernetes.io/ingress.class: traefik
         kubernetes.io/ingress.class: nginx
         kubernetes.io/tls-acme: "true"
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -184,30 +191,9 @@ Once done, apply the `Ingress` file.
 
     kubectl apply -f ./kerberos-vault/ingress.yaml -n kerberos-vault
 
-#### (Option 1) Traefik
+#### Ingress-Nginx
 
-[**Traefik**](https://containo.us/traefik/) is a reverse proxy and load balancer which allows you to expose your deployments more easily. Kerberos uses Traefik to expose its APIs more easily.
-
-Add the Helm repository and install traefik.
-
-    kubectl create namespace traefik
-    helm repo add traefik https://helm.traefik.io/traefik
-    helm install traefik traefik/traefik -n traefik
-
-After installation, you should have an IP attached to Traefik service, look for it by executing the `get service` command. You will see the ip address in the `EXTERNAL-IP` attribute.
-
-    kubectl get svc
-
-        NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-        kubernetes                  ClusterIP      10.0.0.1       <none>          443/TCP                      36h
-    --> traefik                     LoadBalancer   10.0.27.93     40.114.168.96   443:31623/TCP,80:31804/TCP   35h
-        traefik-dashboard           NodePort       10.0.252.6     <none>          80:31146/TCP                 35h
-
-Go to your DNS provider and link the domain you've configured in the first step `traefik.domain.com` to the IP address of thT `EXTERNAL-IP` attribute. When browsing to `traefik.domain.com`, you should see the traefik dashboard showing up.
-
-#### (Option 2) Ingress-Nginx (alternative for Traefik)
-
-If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
+We are using an ingress to make the Kerberos Vault available, you might prefer another ingress, but we recommended `nginx` as it is lightweight and easy to setup.
 
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
@@ -219,7 +205,7 @@ If you don't like `Traefik` but you prefer `Ingress Nginx`, that works as well.
 If everything worked out as expected, you should now have following services in your cluster across different namespaces:
 
 - MongoDB
-- Traefik
+- Ngin
 - Kerberos Vault
 
 It should look like this.
@@ -232,9 +218,9 @@ It should look like this.
     NAME                              READY   STATUS    RESTARTS   AGE
     mongodb-758d5c5ddd-qsfq9          1/1     Running   0          5m31s
 
-    $ kubectl get pods -n traefik
-    NAME                              READY   STATUS    RESTARTS   AGE
-    traefik-7d566ccc47-mwslb          1/1     Running   0          4d12h
+    $ kubectl get pods -n ingress-nginx
+    NAME                                                     READY   STATUS    RESTARTS   AGE
+    nginx-ingress-nginx-controller-664f8f8d78-m4zck          1/1     Running   0          4d12h
 
 ### Access the system
 
@@ -349,7 +335,7 @@ As you might have read in the `A. Managed Kubernetes` section, Kerberos Vault re
 
 - Helm
 - MongoDB
-- Traefik (or alternatively Nginx ingress)
+- Nginx
 
 However for a self-hosted cluster, we'll need following components on top:
 

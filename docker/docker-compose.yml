@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   #traefik:
   #  image: "traefik:v2.9"
   #  container_name: "traefik"
@@ -18,9 +17,9 @@ services:
   #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   mongo:
-    image: 'mongo:4.4.16'
-    container_name: 'mongo'
-    hostname: 'mongo'
+    image: "mongo:4.4.16" # or mongo:5.x, mongo:6.x or later
+    container_name: "mongo"
+    hostname: "mongo"
     ports:
       - 27017
     volumes:
@@ -36,9 +35,9 @@ services:
       start_period: 40s
 
   minio:
-    image: 'quay.io/minio/minio'
-    container_name: 'minio'
-    hostname: 'minio'
+    image: "quay.io/minio/minio"
+    container_name: "minio"
+    hostname: "minio"
     command: server /data --console-address ":9090"
     ports:
       - 9000:9000
@@ -66,27 +65,41 @@ services:
     #  - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
 
   vault:
-    image: 'kerberos/vault:1.0.1189510652'
+    image: "kerberos/vault:1.0.1194272500"
     restart: always
-    container_name: 'kerberos-vault'
-    hostname: 'kerberos-vault'
+    container_name: "kerberos-vault"
+    hostname: "kerberos-vault"
     depends_on:
       mongo:
         condition: service_healthy
     ports:
-      - '80:80'
+      - "80:80"
     volumes:
       - "./vault:/vault"
     environment:
       - GIN_MODE=release
       - KERBEROS_LOGIN_USERNAME=root
       - KERBEROS_LOGIN_PASSWORD=pass
+
+      # This is the mongodb database where data will be stored, you might use a different name if you want.
+      - MONGODB_DATABASE_STORAGE=KerberosStorage
+
+      # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
+      # If uri is set, the below properties are not used (host, adminDatabase, username, password)
+      #- MONGODB_URI="mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+
+      # If you do not wish to use the URI, you can specify the individual values.
       - MONGODB_HOST=mongo
       - MONGODB_DATABASE_CREDENTIALS=admin
       - MONGODB_USERNAME=root
       - MONGODB_PASSWORD=pass
-      - MONGODB_DATABASE_STORAGE=KerberosStorage
+
+      # MQTT broker to be used for on-demand forwarding.
       - MQTTURI=
+      - MQTT_USERNAME=
+      - MQTT_PASSWORD=
+
+      # If you have a chained vault setup, enable this.
       - CONTINUOUS_FORWARDING=false
     #labels:
     #  - 'traefik.enable=true'
@@ -99,7 +112,6 @@ services:
 
 volumes:
   kerberos-data:
-
 
 networks:
   default:

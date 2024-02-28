@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: vault
-        image: kerberos/vault:1.0.1189510652
+        image: kerberos/vault:1.0.1194272500
         #imagePullPolicy: Always
         resources:
           limits:
@@ -43,6 +43,26 @@ spec:
           value: "root"
         - name: KERBEROS_LOGIN_PASSWORD
           value: "kerberos"
+
+        # Mongodb configuration (if you are not using the configmap)
+        # This is the mongodb database where data will be stored, you might use a different name if you want.
+        #- name: MONGODB_DATABASE_STORAGE
+        #  value : "KerberosStorage"
+
+        # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
+        # If uri is set, the below properties are not used (host, adminDatabase, username, password)
+        #MONGODB_URI: "mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+        
+        # If you do not wish to use the URI, you can specify the individual values.
+        #- name: MONGODB_HOST
+        #  value: "mongodb.mongodb"
+        #- name: MONGODB_DATABASE_CREDENTIALS
+        #  value: "admin"
+        #- name: MONGODB_USERNAME
+        #  value: "root"
+        #- name: MONGODB_PASSWORD
+        #  value: "yourmongodbpassword"
+
         # MQTT broker to be used for on-demand forwarding.
         - name : MQTTURI
           value: "tcp://mqtt.kerberos.io:1883"
@@ -50,6 +70,7 @@ spec:
           value: ""
         - name : MQTT_PASSWORD
           value: ""
+
         # If you have a chained vault setup, enable this.
         - name: CONTINUOUS_FORWARDING
           value: "false"

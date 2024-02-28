@@ -3,8 +3,15 @@ kind: ConfigMap
 metadata:
   name: mongodb
 data:
+  # This is the mongodb database where data will be stored, you might use a different name if you want.
+  MONGODB_DATABASE_STORAGE: "KerberosStorage"
+
+  # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
+  # If uri is set, the below properties are not used (host, adminDatabase, username, password)
+  #MONGODB_URI: "mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+  
+  # If you do not wish to use the URI, you can specify the individual values.
   MONGODB_HOST: "mongodb.mongodb"
   MONGODB_DATABASE_CREDENTIALS: "admin"
   MONGODB_USERNAME: "root"
   MONGODB_PASSWORD: "yourmongodbpassword"
-  MONGODB_DATABASE_STORAGE: "KerberosStorage"
