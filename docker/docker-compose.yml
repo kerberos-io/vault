@@ -89,7 +89,7 @@ services:
       #- MONGODB_URI="mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
 
       # If you do not wish to use the URI, you can specify the individual values.
-      - MONGODB_HOST=mongo
+      - MONGODB_HOST=mongodb.mongodb
       - MONGODB_DATABASE_CREDENTIALS=admin
       - MONGODB_USERNAME=root
       - MONGODB_PASSWORD=pass
