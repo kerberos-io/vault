@@ -140,7 +140,7 @@ Press the `validate` button, you should see a green confirmation box at the top.
 
 ### Add an account
 
-Now we have create a storage provider, we'll need to provide access to that provider by creatign an account. An account contains credentials that can be used by a Kerberos Agents in the storage provider, in other words an account protects a storage provider from the outside, and only allows operations on it by using the correct account credentials.
+Now we have create a storage provider, we'll need to provide access to that provider by creating an account. An account contains credentials that can be used by a Kerberos Agents in the storage provider, in other words an account protects a storage provider from the outside, and only allows operations on it by using the correct account credentials.
 
 Open the account page, by selectig the `Accounts` navigation item. Select the `+ Add Account` button. Fill-in the required fields to create an account.
 
