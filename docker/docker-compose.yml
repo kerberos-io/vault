@@ -65,7 +65,7 @@ services:
     #  - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
 
   vault:
-    image: "kerberos/vault:1.0.1194272500"
+    image: "kerberos/vault:1.0.1218231161"
     restart: always
     container_name: "kerberos-vault"
     hostname: "kerberos-vault"
