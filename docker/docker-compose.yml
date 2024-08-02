@@ -16,6 +16,52 @@ services:
   #  volumes:
   #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+  vault:
+    image: "kerberos/vault:1.0.1398121865"
+    restart: always
+    container_name: "kerberos-vault"
+    hostname: "kerberos-vault"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    volumes:
+      - "./vault:/vault"
+    environment:
+      - GIN_MODE=release
+      - KERBEROS_LOGIN_USERNAME=root
+      - KERBEROS_LOGIN_PASSWORD=pass
+
+      # This is the mongodb database where data will be stored, you might use a different name if you want.
+      - MONGODB_DATABASE_STORAGE=KerberosStorage
+
+      # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
+      # If uri is set, the below properties are not used (host, adminDatabase, username, password)
+      #- MONGODB_URI="mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
+
+      # If you do not wish to use the URI, you can specify the individual values.
+      - MONGODB_HOST=mongo
+      - MONGODB_DATABASE_CREDENTIALS=admin
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=pass
+
+      # MQTT broker to be used for on-demand forwarding.
+      - MQTTURI=
+      - MQTT_USERNAME=
+      - MQTT_PASSWORD=
+
+      # If you have a chained vault setup, enable this.
+      - CONTINUOUS_FORWARDING=false
+    #labels:
+    #  - 'traefik.enable=true'
+    #  - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
+    #  - 'traefik.http.routers.kerberos-vault.entrypoints=web'
+    #  - 'traefik.http.routers.kerberos-vault.tls=false'
+    #  - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
+    #  - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
+    #  - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
+
   mongo:
     image: "mongo:4.4.16" # or mongo:5.x, mongo:6.x or later
     container_name: "mongo"
@@ -64,51 +110,17 @@ services:
     #  - "traefik.http.routers.minio-console.service=minio-console"
     #  - 'traefik.http.services.minio-console.loadbalancer.server.port=9090'
 
-  vault:
-    image: "kerberos/vault:1.0.1389072349"
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: "rabbitmq"
+    hostname: "rabbitmq"
     restart: always
-    container_name: "kerberos-vault"
-    hostname: "kerberos-vault"
-    depends_on:
-      mongo:
-        condition: service_healthy
     ports:
-      - "80:80"
+      - 5672:5672
+      - 15672:15672
     volumes:
-      - "./vault:/vault"
-    environment:
-      - GIN_MODE=release
-      - KERBEROS_LOGIN_USERNAME=root
-      - KERBEROS_LOGIN_PASSWORD=pass
-
-      # This is the mongodb database where data will be stored, you might use a different name if you want.
-      - MONGODB_DATABASE_STORAGE=KerberosStorage
-
-      # MongoDB URI (for example for a SaaS service like MongoDB Atlas)
-      # If uri is set, the below properties are not used (host, adminDatabase, username, password)
-      #- MONGODB_URI="mongodb+srv://xx:xx@kerberos-hub.xxx.mongodb.net/?retryWrites=true&w=majority&appName=xxx"
-
-      # If you do not wish to use the URI, you can specify the individual values.
-      - MONGODB_HOST=mongo
-      - MONGODB_DATABASE_CREDENTIALS=admin
-      - MONGODB_USERNAME=root
-      - MONGODB_PASSWORD=pass
-
-      # MQTT broker to be used for on-demand forwarding.
-      - MQTTURI=
-      - MQTT_USERNAME=
-      - MQTT_PASSWORD=
-
-      # If you have a chained vault setup, enable this.
-      - CONTINUOUS_FORWARDING=false
-    #labels:
-    #  - 'traefik.enable=true'
-    #  - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
-    #  - 'traefik.http.routers.kerberos-vault.entrypoints=web'
-    #  - 'traefik.http.routers.kerberos-vault.tls=false'
-    #  - 'traefik.http.routers.kerberos-vault.tls.certresolver=leresolver'
-    #  - "traefik.http.routers.kerberos-vault.service=kerberos_vault"
-    #  - 'traefik.http.services.kerberos_vault.loadbalancer.server.port=80'
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/ar/log/rabbitmq
 
 volumes:
   kerberos-data:

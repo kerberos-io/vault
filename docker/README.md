@@ -157,4 +157,36 @@ Open the account page, by selectig the `Accounts` navigation item. Select the `+
 
 ## You're done!
 
-Now you are ready setting up Kerberos Vault with Minio! It's time to connect some Kerberos Agents! Let's have a look here how to do that.
+Now you are ready setting up Kerberos Vault with Minio! It's time to connect some Kerberos Agents! Let's have a look here how to do that. If you didn't already create a Kerberos Agent, [please have a look here](https://github.com/kerberos-io/agent/tree/master/deployments/docker) to understand how it's done.
+
+### Connect Kerberos Agent to Kerberos Vault
+
+Once you have spinned up one or more agents through `docker`, `docker compose`, `Kerberos Factory` or any other automation tool you can configure your Kerberos Agents to connect to Kerberos Vault.
+
+As you might have noticed is that each Kerberos Agent will connect to a single camera, coming with its own dedicated agent configuration for that specific camera. This design principle allows us to support a distributed and resilent approach where workloads can be spread towards a cluster of machines.
+
+A Kerberos Agent can be configured using various methods: `the UI`, `environment variables` or `configuration files`. 
+
+#### UI
+
+When running the Kerberos Agent through one of the deployments as mentioned above you should be able reach the Kerberos Agent UI through the defined port. You should see a login screen where can signin with the default username and password: `root`, `root`.
+
+![Login Kerberos agent](./assets/kerberos-agent-overview.gif)
+
+Once signed in you should head over the `settings` or `configuration page` and look for the `persistence` tab. Change the dropdown to `Kerberos Vault`, you will see that several details are required to be filled in, by adding the correct values we are able to setup a secure connection to `Kerberos Vault`
+
+![Change persistence settings](./assets/kerberos-agent-to-kerberos-vault.gif)
+
+The information we need to provide are the following fields.
+
+- `Kerberos Vault API URL`:  The API url is hosted on the `http://{your-vault-domain}/api`, where the `/api` suffix is added to the domain of your Kerberos Vault. You can verify this by browsing to `http://{your-vault-domain}/api/health`.
+- `Provider`: The storage provider you would like to use. You can find the providers on the "Storage providers" page (or specified in the Kerberos Vault account you have setup).
+- `Directory`:  This is the (sub) directory where the recordings will be stored in the storage provider. Important to note is that if you want to view your recordings through Kerberos Hub, this directory has to match the username of your Kerberos Hub account.
+- `Access Key`: The access key of the account you have created in previous steps.
+- `Secret Key`: The secret key of the account you have created in previous steps.
+
+Once you have filled in the relevant credentials you can hit the `Verify Connection` button and you should see a green success bar shown on top of the UI. You could also verify on your storage provider by connecting to the configured storage provider and see if a `test-provider` directory was created with a sample video.
+
+![Verify settings](./assets/save-kerberos-vault-setings.gif)
+
+Congratulations! Your Kerberos Agent is now successfully connected to the Kerberos Vault. You can centralize your recordings on the storage provider of your choice, whether it's Edge or Cloud. This will allow you to manage and access your recordings more efficiently and securely.

@@ -20,11 +20,11 @@ spec:
     spec:
       containers:
       - name: vault
-        image: kerberos/vault:1.0.1389072349
+        image: kerberos/vault:1.0.1398121865
         #imagePullPolicy: Always
         resources:
           limits:
-            memory: 2048Mi
+            memory: 4096Mi
             cpu: 2000m
         ports:
           - containerPort: 80
