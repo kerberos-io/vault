@@ -17,7 +17,7 @@ services:
   #    - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   vault:
-    image: "kerberos/vault:1.0.1398121865"
+    image: "uugai/vault:v1.0.6"
     restart: always
     container_name: "kerberos-vault"
     hostname: "kerberos-vault"
