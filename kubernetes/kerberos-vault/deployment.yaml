@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: vault
-        image: uugai/vault:v1.0.6
+        image: uugai/vault:v1.1.6
         #imagePullPolicy: Always
         resources:
           limits:
