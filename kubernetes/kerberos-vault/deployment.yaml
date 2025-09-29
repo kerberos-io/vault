@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: vault
-        image: uugai/vault:v1.1.6
+        image: uugai/vault:v1.1.12
         #imagePullPolicy: Always
         resources:
           limits:
@@ -74,6 +74,14 @@ spec:
         # If you have a chained vault setup, enable this.
         - name: CONTINUOUS_FORWARDING
           value: "false"
+        # Number of media files forwarded concurrently during continuous forwarding.
+        - name: CONTINUOUS_FORWARDING_CONCURRENCE_RATE
+          value: "10"
+        - name: FORWARD_MARKERS_HUB_URL
+          value: "https://api.cloud.kerberos.io"
+        - name: FORWARD_MARKERS_HUB_TOKEN
+          value: "eyJhb...DCWHU"
+        
       #volumes:
       #- name: rootcerts
       #  configMap:
