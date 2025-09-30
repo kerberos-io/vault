@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: vault
-        image: uugai/vault:v1.1.12
+        image: uugai/vault:v1.1.13
         #imagePullPolicy: Always
         resources:
           limits:
@@ -80,7 +80,7 @@ spec:
         - name: FORWARD_MARKERS_HUB_URL
           value: "https://api.cloud.kerberos.io"
         - name: FORWARD_MARKERS_HUB_TOKEN
-          value: "eyJhb...DCWHU"
+          value: "Bearer eyJhb...DCWHU"
         
       #volumes:
       #- name: rootcerts

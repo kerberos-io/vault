@@ -53,6 +53,10 @@ services:
 
       # If you have a chained vault setup, enable this.
       - CONTINUOUS_FORWARDING=false
+      # Number of media files forwarded concurrently during continuous forwarding.
+      - CONTINUOUS_FORWARDING_CONCURRENCE_RATE=10
+      - FORWARD_MARKERS_HUB_URL=https://api.cloud.kerberos.io
+      - FORWARD_MARKERS_HUB_TOKEN=Bearer eyJhb...DCWHU
     #labels:
     #  - 'traefik.enable=true'
     #  - 'traefik.http.routers.kerberos-vault.rule=Host(`kerberos-vault.domain.tld`)'
