@@ -28,7 +28,7 @@ There are still some tweaks and works to do (see below), to make this setup more
 
 # Installation
 
-We'll start with installing Kerberos Vault on your machine, VM or whatever hardware that can run the `docker` runtime. Once install, we'll go into a quick configuration course to connect your Kerberos Vault to a storage provider.
+We'll start with installing Kerberos Vault on your machine, VM or whatever hardware that can run the `docker` runtime. Once installed, we'll go into a quick configuration course to connect your Kerberos Vault to a storage provider.
 
 ## Prerequisites
 
@@ -63,7 +63,7 @@ To persist our date outside our containers, we'll make a few directories on our 
 
 Now we are ready to start the `docker compose` configuration. While creating we will create several services:
 
-- Traefik: will be used an `Ingress` to reach our other services.
+- Traefik: will be used as an `Ingress` to reach our other services.
 - Kerberos Vault: The application that stores recordings from Kerberos Agent in a storage provider; minio for this example.
 - Minio: The local object storage we are setting up.
 - MongoDB: Kerberos Vault will store some metadata in a MongoDB instance.
@@ -76,7 +76,7 @@ Create the services using the `create` command.
 
     docker compose create
 
-One created you can activate the services with the `up` command.
+Once created you can activate the services with the `up` command.
 
     docker compose up
 
@@ -93,7 +93,7 @@ or using the ports you might reach the following endpoints:
 
 # Let's configure it!
 
-Now the services are up and running, you should be able to access both the Kerberos Vault application as the Minio console. You can access both applications using the credentials specified in the `environment` variables.
+Now the services are up and running, you should be able to access both the Kerberos Vault application and the Minio console. You can access both applications using the credentials specified in the `environment` variables.
 
 ## Open Minio Console
 
@@ -121,7 +121,7 @@ Open a new tab in your browser and paste in the Kerberos Vault url `http://kerbe
 
 ### Add a storage provider
 
-To store your data, Kerberos Vault, leverages other storage solutions such as (MinIO, Storj, S3, Google Cloud Storage, Ceph, etc) to store your data. In that sense Kerberos Vault acts as a proxy between your Kerberos Agents and the persistence layer. By doing that Kerberos Vault decouples persistence from your Kerberos Agents, and allows you to switch persistence on-the-fly. Next to this there are many more advantages such as caching, forwarding, etc.
+To store your data, Kerberos Vault, leverages other storage solutions such as (MinIO, Storj, S3, Google Cloud Storage, Ceph, etc) to store your data. In that sense Kerberos Vault acts as a proxy between your Kerberos Agents and the persistence layer. By doing that, Kerberos Vault decouples persistence from your Kerberos Agents, and allows you to switch persistence on-the-fly. Next to this there are many more advantages such as caching, forwarding, etc.
 
 Open the `Storage Providers` page, by selecting the navigation item. Select the `+ Add Storage Provider` button, to create a new storage provider.
 
@@ -129,7 +129,7 @@ Open the `Storage Providers` page, by selecting the navigation item. Select the 
 
 Select the option `Minio` from the dropdown and fill-in the required fields.
 
-- Provider name: an unique name that matches your needs.
+- Provider name: a unique name that matches your needs.
 - Bucket name: the name of the bucket you created in Minio.
 - Region: not required, use `na`; stands for notapplicable.
 - Hostname: this should match the minio service name, for this configuration it would be `minio:9000`, as we run minio on port `9000`.
@@ -140,7 +140,7 @@ Press the `validate` button, you should see a green confirmation box at the top.
 
 ### Add an account
 
-Now we have create a storage provider, we'll need to provide access to that provider by creating an account. An account contains credentials that can be used by a Kerberos Agents in the storage provider, in other words an account protects a storage provider from the outside, and only allows operations on it by using the correct account credentials.
+Now that we have created a storage provider, we'll need to provide access to that provider by creating an account. An account contains credentials that can be used by a Kerberos Agents in the storage provider. In other words, an account protects a storage provider from external access and only allows operations on it by using the correct account credentials.
 
 Open the account page, by selectig the `Accounts` navigation item. Select the `+ Add Account` button. Fill-in the required fields to create an account.
 
@@ -150,9 +150,9 @@ Open the account page, by selectig the `Accounts` navigation item. Select the `+
 - Main provider: select the provider we have created.
 - Day limit: the life time of a recording; number of days it will be persisted.
 - Integrations: a message broker that will be triggered on receival of a recording.
-- Directory: set it `*`, this wildcard option allow you to leverage it for multiple users or sub directories.
+- Directory: set it to `*`, this wildcard option allow you to leverage it for multiple users or sub directories.
 - Access Key and Secret Key: Press the `Generate` button, to get some strong keys.
-- Cloud analysis: Disabled, not necessary if you do not connect ot Kerberos Hub.
+- Cloud analysis: Disabled, not necessary if you do not connect to Kerberos Hub.
 - Edge analysis: Disabled, not required.
 
 ## You're done!
@@ -161,23 +161,23 @@ Now you are ready setting up Kerberos Vault with Minio! It's time to connect som
 
 ### Connect Kerberos Agent to Kerberos Vault
 
-Once you have spinned up one or more agents through `docker`, `docker compose`, `Kerberos Factory` or any other automation tool you can configure your Kerberos Agents to connect to Kerberos Vault.
+Once you have spun up one or more agents through `docker`, `docker compose`, `Kerberos Factory` or any other automation tool you can configure your Kerberos Agents to connect to Kerberos Vault.
 
-As you might have noticed is that each Kerberos Agent will connect to a single camera, coming with its own dedicated agent configuration for that specific camera. This design principle allows us to support a distributed and resilent approach where workloads can be spread towards a cluster of machines.
+As you might have noticed, each Kerberos Agent will connect to a single camera, with its own dedicated agent configuration for that specific camera. This design principle allows us to support a distributed and resilent approach where workloads can be spread towards a cluster of machines.
 
-A Kerberos Agent can be configured using various methods: `the UI`, `environment variables` or `configuration files`. 
+A Kerberos Agent can be configured using various methods: `the UI`, `environment variables`, or `configuration files`. 
 
 #### UI
 
-When running the Kerberos Agent through one of the deployments as mentioned above you should be able reach the Kerberos Agent UI through the defined port. You should see a login screen where can signin with the default username and password: `root`, `root`.
+When running the Kerberos Agent through one of the deployments as mentioned above you should be able reach the Kerberos Agent UI through the defined port. You should see a login screen where you can sign in with the default username and password: `root`, `root`.
 
 ![Login Kerberos agent](./assets/kerberos-agent-overview.gif)
 
-Once signed in you should head over the `settings` or `configuration page` and look for the `persistence` tab. Change the dropdown to `Kerberos Vault`, you will see that several details are required to be filled in, by adding the correct values we are able to setup a secure connection to `Kerberos Vault`
+Once signed in you should head over to the `settings` or `configuration page` and look for the `persistence` tab. Change the dropdown to `Kerberos Vault`, you will see that several details are required to be filled in, by adding the correct values we are able to set up a secure connection to `Kerberos Vault`
 
 ![Change persistence settings](./assets/kerberos-agent-to-kerberos-vault.gif)
 
-The information we need to provide are the following fields.
+The information we need to provide are the following fields:
 
 - `Kerberos Vault API URL`:  The API url is hosted on the `http://{your-vault-domain}/api`, where the `/api` suffix is added to the domain of your Kerberos Vault. You can verify this by browsing to `http://{your-vault-domain}/api/health`.
 - `Provider`: The storage provider you would like to use. You can find the providers on the "Storage providers" page (or specified in the Kerberos Vault account you have setup).
